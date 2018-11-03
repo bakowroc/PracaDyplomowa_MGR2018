@@ -1,0 +1,44 @@
+\documentclass[eng,printmode]{mgr}
+\usepackage{polski}
+\usepackage{url}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{scrextend}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{psfrag}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{supertabular}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{hhline}
+\usepackage{graphicx}
+\usepackage{showlabels}
+\graphicspath{ {images/} }
+\newcommand{\R}{I\!\!R}
+\newtheorem{theorem}{Twierdzenie}[section]
+
+\title{Projekt i implementacja systemu detekcji błędów w danych teleinformatycznych}
+\engtitle{Design and implementation of defect detection system in ICT data}
+\author{Maciej Bakowicz}
+\supervisor{prof. dr hab. inż. Krzysztof Walkowiak, W-4}
+
+\field{Teleinformatyka (TIN)}
+\specialisation{Projektowanie Sieci Teleinformatycznych (TIP)}
+
+
+\begin{document}
+
+\maketitle 
+
+\tableofcontents 
+
+\chapter{Wstęp}  
+\section{Cel pracy}
+Celem niniejszej pracy jest zaprojektowanie oraz zaimplementowanie systemu, który w efektywny sposób wykryje błędy (tu: znaczące odstępstwa od normy w przedziale lokalnym) w danych tyczących się infrastruktury teleinformatycznej (głównie stacje nadawczo-odbiorcze BTS - Base Transceiver Station). W czasie realizacji pracy zostaną zaimplementowane istniejące oraz własne algorytmy a następnie porównane między sobą w celu wybrania sposobu (algorytmu) optymalnego. Zaprojektowany system nie powinien sam ingerować w dane (usuwać, zmieniać), gdyż dane nie są obarczone informacjami dodatkowymi (jak chociażby przerwy w działaniu stacji bazowych) przez co nie ma wystarczającej wiedzy potrzebnej do stwierdzenia przyczyny wystąpienia błędu. W końcowej fazie projektu system powinien móc wskazać błędne dane a następnie przedstawić użytkownikowi możliwości, gdzie w zależności od natury, charakteru użytkownik mógłby je usunąć lub spróbować naprawić (ręcznie lub za pomocą algorytmów uczenia maszynowego). 
+
+\end{document}
