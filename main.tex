@@ -22,8 +22,8 @@
 \newcommand{\R}{I\!\!R}
 \newtheorem{theorem}{Twierdzenie}[section]
 
-\title{Projekt i implementacja systemu detekcji błędów w danych teleinformatycznych}
-\engtitle{Design and implementation of defect detection system in ICT data}
+\title{Porównanie metod wykrywania obserwacji odstających w danych teleinformatycznych}
+\engtitle{Comparsion of outliers detecting methods in ICT data}
 \author{Maciej Bakowicz}
 \supervisor{prof. dr hab. inż. Krzysztof Walkowiak, W-4}
 
@@ -32,7 +32,7 @@
 
 
 \begin{document}
-
+\bibliographystyle{plain}
 \maketitle 
 
 \tableofcontents 
@@ -41,4 +41,25 @@
 \section{Cel pracy}
 Celem niniejszej pracy jest zaprojektowanie oraz zaimplementowanie systemu, który w efektywny sposób wykryje błędy (tu: znaczące odstępstwa od normy w przedziale lokalnym) w danych tyczących się infrastruktury teleinformatycznej (głównie stacje nadawczo-odbiorcze BTS - Base Transceiver Station). W czasie realizacji pracy zostaną zaimplementowane istniejące oraz własne algorytmy a następnie porównane między sobą w celu wybrania sposobu (algorytmu) optymalnego. Zaprojektowany system nie powinien sam ingerować w dane (usuwać, zmieniać), gdyż dane nie są obarczone informacjami dodatkowymi (jak chociażby przerwy w działaniu stacji bazowych) przez co nie ma wystarczającej wiedzy potrzebnej do stwierdzenia przyczyny wystąpienia błędu. W końcowej fazie projektu system powinien móc wskazać błędne dane a następnie przedstawić użytkownikowi możliwości, gdzie w zależności od natury, charakteru użytkownik mógłby je usunąć lub spróbować naprawić (ręcznie lub za pomocą algorytmów uczenia maszynowego). 
 
+\section{Zakres pracy}
+\subsection{Przygotowanie danych}
+Pierwszym etapem niniejszej pracy jest zebranie rzeczywistych danych od firmy zajmującej się ich zbieraniem i przetwarzaniem.  \\
+Wartości oraz opisy pewnych cech tych danych są w dużej mierze tajne i zawierają poufne informacje, dlatego przedstawienie ich w niezmienionej formie byłoby poważnym naruszeniem umowy oraz klauzuli poufności zawartych z firmą. \\
+Dlatego kolejnym krokiem jest zaprogramowanie algorytmu, programu, który będzie w stanie zmienić strukturę tych danych, w szczególności przypisać nazwy rzeczywistych operatorów oraz identyfikatorów urządzeń zbierających dane do nazw losowych, którymi posługiwać będzie można się w sposób swobodny w dalszych etapach pracy. \\
+Zdobyte dane zawierają również szereg dodatkowych informacji, które powinny zostać odrzucone ze względu na małą wartość informacyjną i zachowanie ich jest niepotrzebne do realizacji celu pracy. Dlatego kolejnym i ostatnim krokiem w przygotowaniu danych jest stworzenie nowych struktur, tabel i schematów a następnie przekopiowanie tych wartości, które są niezbędne. Ilość danych (około pół miliona wierszy) jest na tyle duża, że wykorzystanie mechanizmów do zarządzania Big Data jest niezbędne \cite{cassandra}\cite {cassandra-driver}.
+
+\subsection{Wybór technologii i algorytmów}
+Po utworzeniu struktur i wypełnieniu ich danymi kolejnym krokiem jest wybranie istniejących już algorytmów wykrywania obserwacji odstających \cite{outliers-basic} a następnie ich implementacja w wybranym języku programistycznym lub wykorzystanie rozwiązań już wcześniej zaimplementowanych. Ilość zaimplementowanych algorytmów zależy w dużej mierze od stopnia trudności w ich implementacji oraz testowaniu a także od ilości dostępnych materiałów na ich temat. W obrębie wyboru algorytmów znajdzie się zatem nie tylko ich wyszukanie i implementacja ale także wstępna segregacja wraz z odrzuceniem tych mniej obiecujących czy nie pasujących do koncepcji. Część zaimplementowanych algorytmów może w końcowym etapie nie być brane pod uwagę ze względu właśnie na ich mniejszą użyteczność. \\
+Najbardziej obiecującą technologią jest język Python \cite{python} ze względu na dużą ilość bibliotek do tworzenia struktur i schematów danych \cite{pandas} a także działań matematycznych co uproszcza proces pisania algorytmów \cite{numpy}.
+
+\subsection{Napisanie własnego algorytmu}
+Po zaimplementowaniu i przetestowaniu istniejących już rozwiązań oraz analizie ich wyników zostanie zaimplementowany własny algorytm, który wykorzystuje autorskie rozwiązania. Aby w procesie porównywania algorytmów wyniki były rzetelne i porównywalne rozwiązania te muszą wykorzystywać podobne mechaniki co wcześniej wybrane algorytmy \cite{isolation-forest}\cite{novelty}. 
+
+\subsection{Stworzenie raportu porównawczego}
+Końcowym etapem pracy jest napisanie raportu porównawczego oraz wybór cech, które będą ze sobą porównywane. Raport ten zawiera szereg porównań między kolejnymi algorytmami wraz ze wskazaniem tego optymalnego w zależności od przypadku użycia. Algorytmy są testowane kilkukrotnie na różnych zestawach danych (różniącymi się charakterystykami oraz wartościami). \\
+Na potrzeby lepszej wizualizacji porównań oraz działania poszczególnych algorytmów do raportu zostaną dołączone spore ilość wykresów, data gramów oraz tabel \cite{react}\cite{react-chart}.
+
+
+\bibliography{bibliografia}
 \end{document}
+
