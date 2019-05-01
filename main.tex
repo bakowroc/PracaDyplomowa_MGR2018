@@ -69,7 +69,7 @@ Po zaimplementowaniu i przetestowaniu istniejących już rozwiązań oraz analiz
 
 \subsection{Stworzenie raportu porównawczego}
 Końcowym etapem pracy jest napisanie raportu porównawczego oraz wybór cech, które będą ze sobą porównywane. Raport ten zawiera szereg porównań między kolejnymi algorytmami wraz ze wskazaniem tego optymalnego w zależności od przypadku użycia. Algorytmy są testowane kilkukrotnie na różnych zestawach danych (różniącymi się charakterystykami oraz wartościami). \\
-Na potrzeby lepszej wizualizacji porównań oraz działania poszczególnych algorytmów do raportu zostaną dołączone spore ilość wykresów, data gramów oraz tabel \cite{react}\cite{react-chart}.
+Na potrzeby lepszej wizualizacji porównań oraz działania poszczególnych algorytmów do raportu zostaną dołączone spore ilość wykresów, data gramów oraz tabel.
 
 \chapter{Przegląd literatury}
 Specyfika dostarczonych danych, które są wykorzystywane do przeprowadzenia badań i symulacji wybranych metod narzuca pewne ograniczenia co do wyboru i wykorzystania algorytmów. Z powodu braku jakichkolwiek wzorcowych zbiorów danych, które mogłyby posłużyć jako zbiory uczące. \\
@@ -79,19 +79,19 @@ Wybrane algorytmy zatem powinny mieć możliwość klasyfikacji zbioru danych (p
 Metoda okna czasowego jest to sposób podziału całego zbioru danych na szereg mniejszych zbiorów zawierających się w pojedynczym, z góry określonym wycinku czasowym (dziedzina funkcji).\\
 Podział określają dwa parametry:
 \begin{itemize}
-\item szerokość okna - ilość punktów dla podzbiorów wygenerowanych z podanego zbioru danych
-\item długość kroku - ilość punktów o które okno jest przesuwane w każdej iteracji
+\item \textbf{szerokość okna} - ilość punktów dla podzbiorów wygenerowanych z podanego zbioru danych
+\item \textbf{długość kroku} - ilość punktów o które okno jest przesuwane w każdej iteracji
 \end{itemize}
 
 Startowa pozycja okna to punkt 0 na osi X (dziedzina). Okno przesuwa się w prawą stronę. Dopuszczalne jest aby ostatni podzbiór miał inną szerokość niż przyjęta na początku (wynika to z niekoniecznie całkowicie podzielnego zbioru danych na równe podzbiory).
 \\ \\
-Działanie metody wizualizuje poniższy rysunek.
-\\
-\begin{figure}[h]
-\includegraphics[scale=0.6]{okno_czasowe}
+Działanie metody wizualizuje poniższy rysunek:
+
+\begin{figure}[h!]
+\includegraphics[scale=0.7]{okno_czasowe}
 \caption{Działanie metody podziału na okna czasowe}
 \end{figure}
-\\
+
 Szerokość okna przyjęto jako 5 a długość kroku jako 2. Można zauważyć, że okna różnią się obszarem zajmowanej dziedziny co wynika z niejednorodnego rozrzutu punktów.
 \\
 Dodatkowo widać, że istnieją części wspólne dla sąsiadujących podzbiorów. Zastosowanie okna czasowego w tej postaci, zapewni, że większość punktów może być analizowana w różnych środowiskach, przez co eliminuje się lokalne odchylenia, istniejące jedynie w jednym z podzbiorów.
@@ -99,6 +99,8 @@ Dodatkowo widać, że istnieją części wspólne dla sąsiadujących podzbioró
 W zależności od zastosowanego algorytmu na podzbiorach metoda ta powinna dzielić zbiór danych na co najmniej 10 podzbiorów lecz należy pamiętać, że ilość punktów w danym podzbiorze (szerokość okna) nie powinna być mniejsza niż 2-5 procent szerokości całego zbioru danych.
 \\
 Zastosowanie tej metody zatem jest opłacalne jedynie, gdy badany zbiór danych posiada sporą ilość wartości (liczonych w setkach). Dla mniejszych zbiorów danych stosowanie tej metody nie ma sensu. 
+\\ \\
+Algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
 \section{Algorytm K-Mean}
 Algorytm opierający swoje działanie na podziale zbioru danych na podzbiory nazywane klastrami (ang. clusters). Przydział punktów do konkretnego klastra polega na obliczaniu jego odległości względem punktów sąsiednich (odległość euklidesowa). \\ \\
 Algorytm przyjmuje wiele parametrów, jednak najważniejszym jest ilość klastrów, na które należy podzielić zbiór danych.
@@ -106,25 +108,48 @@ Algorytm przyjmuje wiele parametrów, jednak najważniejszym jest ilość klastr
 Podział na klastry definiuje również pojęcie centroidów (ang. centroids), które przyjmują wartości środka wyznaczonych klastrów (każdy klaster posiada jeden centroid). \\ \\
 
 Podział serii danych ze stemplem czasowym na pojedyncze klastry wraz z centroidami można zobaczyć na poniższym rysunku:
-\\
-\begin{figure}[h]
-\includegraphics[scale=0.6]{KMean}
+
+\begin{figure}[h!]
+\includegraphics[scale=0.7]{KMean}
 \caption{Klasyfikacja zbioru danych}
 \end{figure}
-\\
+
 Informację o przynależności punktu do konkretnego klastra można wykorzystać do wyznaczenia punktów odstających lokalnie (w jednym klastrze). \\
 Sam stempel czasowy jest cechą słabą (jest ona różna dla każdego punktu), dlatego przy stosowaniu tej metody należy rozważyć przypisanie cech dodatkowych, dzięki którymi podział na klastry będzie bardziej dokładniejszy.
-\subsection{Wykorzystanie całych klastrów}
 \subsection{Wykorzystanie odległości od centroidu}
+Jednym ze sposobów określania punktu jako odstającego jest obliczenie odległości w układzie współrzędnych tego punktu od centroidu klastra, do którego ten punkt należy. Następnie można wyznaczyć punkty odstające na dwa sposoby:
+\begin{itemize}
+\item \textbf{odrzucić punkty powyżej zadanego progu} - z zadanym warunkiem odrzucenia, wszystkie punkty, które przekraczają próg warunku zostają sklasyfikowane jako odstające. Metoda wymaga dodatkowych obliczeń takich jak wartość środkowa wartości w każdym klastrze w celu określenia punktu odniesienia. Warunek może przyjąć różne formy, lecz zazwyczaj opiera się on na proporcji względem wartości w zbiorze (np. przekroczenie dwukrotnej wartości średniej lub stosunek wartości średniej do wartości liczonego punktu).
+\item \textbf{odrzucić punkty najbardziej odległe} - trochę prostsza metoda, zakłada, że każdy zbiór danych zawiera pewne ilości punktów odstających, dlatego klasyfikuje najbardziej oddalone punkty jako odstające (biorąc pod uwagę wszystkie punkty, ze wszystkich klastrów, posortowane wartościami odległości od swoich centroidów). Ilość wybranych punktów jest zadana z góry, zazwyczaj około 5-10. Można by zakładać, że takie podejście jest niepoprawne, dlatego rekomenduje się przeprowadzenie wielokrotnych przeliczeń tego samego zbioru danych a następnie uśrednienie wartości otrzymanych (np. przeprowadzenie kilkukrotnych iteracji a następnie uwzględnienie punktów jako dostające jedynie wtedy, gdy wystąpiły one w 90 procentach przeprowadzonych iteracji)  \cite{kmean_dist}. 
+\end{itemize}
+\subsection{Wykorzystanie całych klastrów}
 \section{Algorytm regresji liniowej}
+Algorytm regresji liniowej jest najprostszym z wybranych algorytmów. Na zadanym zbiorze danych wyznaczana jest prosta regresji za pomocą metody najmniejszych kwadratów, czyli funkcja liniowa reprezentująca oszacowane wartości bazując na zadanym zbiorze danych. 
+\\\\
+Dla każdego punktu czasowego linia regresji wyznacza pewną wyestymowaną wartość. Różnica wartości tego punktu oraz punktu aktualnego (ze zbioru danych) jest nazywana błędem.
+\\\\
+Znając wartość błędu oraz zadając warunek można wyznaczyć punkty odstające. Wystarczy jedynie odrzucić te, których błąd jest największy (lub przekracza zadany próg, podobnie jak w metodzie KMean wykorzystującą wartość odległości od centroidu).
+\\\\
+Metoda ta ma jednak pewną wadę. Idealnymi zbiorami danych, dla których można tę metodę wykorzystać są te, które mają pewien zadany na początku, niezmieniający się trend. W momencie gdy występują różnice lokalne między maksymalnymi i minimalnymi wartościami lub obserwuje się miejsca "wyciszenia" (zakresy czasowe, gdzie wartości są zerowe lub bliskie zeru) metoda ta będzie generować zbyt dużą ilość błędów, żeby w efektywny sposób wyznaczyć pojedyncze punkty (zamiast tego będą wyznaczane całe nagromadzenia punktów).
+\\\\
+Wyznaczoną linię regresji przedstawia poniższy rysunek:
+
+\begin{figure}[h!]
+\includegraphics[scale=0.7]{linear_reg}
+\caption{Wyznaczenie prostej regresji dla zbioru danych}
+\end{figure}
+
 \section{Algorytm Isolation Forest}
 
-\chapter{Opis architektury}
-\section{Specyfikacja danych wejściowych}
+
+\chapter{Projekt inzynierski}
+
+\section{Opis architektury}
+\subsection{Specyfikacja danych wejściowych}
 Zbiór danych, który zostanie wykorzystany do zrealizowania zadania odnajdywania obserwacji odstających jest przedstawiony w uporządkowanej strukturze, która na potrzeby pracy została przeorganizowana (niektóre pola zostały usunięte ze względu na ich nieużyteczność) oraz przeredagowana (wartości niektórych pól zostały podmienione - na podstawie wcześniej stworzonego słownika - w celu ukrycia informacji wrażliwych). Dodatkowo powstało kilka struktur pomocniczych.
 \\
 
-\subsection{raw\_data}
+\subsubsection{raw\_data}
 Zbiór wszystkich punktów wartości, które zostały zmierzone. Jest to podstawowa struktura, z której danej posłużą wyszukiwaniu obserwacji odstających. Struktura ta zawiera wszystkie, nieprzypisane dane. Proces przypisywania i wyodrębniania danych, które dotyczą tego samego źródła zachodzi na bieżąco w czasie działania algorytmu. Tworzenie osobnych struktur (tabel w bazie danych) dla każdego źródła osobno byłoby mało optymalne i nieelastyczne (np. w sytuacji gdy dochodzą nowe "paczki" danych).
 \\
 
@@ -190,7 +215,7 @@ Powyższa struktura w bazie danych wyglądałaby następująco:
 \endgroup
 \\
 
-\subsection{kpi\_definitions}
+\subsubsection{kpi\_definitions}
 Zbiór pomocniczy opisujący podstawowe cechy KPI. Zbiór ten nie wpływa na wyniki badań, może być jednak pomocny w procesie decyzyjnym (decyzja o uznaniu punktów odstających jako błędnych oraz usunięciu lub poprawieniu ich). W sytuacji gdy zbiór punktów określany przez definicję jest wyrażony w procentach decyzję o usunięciu / poprawieniu punktów można oprzeć na prostym założeniu, że punkty poza zakresem 0 - 100 są uznawane jako błędne.
 \\
 
@@ -216,7 +241,7 @@ Zbiór pomocniczy opisujący podstawowe cechy KPI. Zbiór ten nie wpływa na wyn
 \\\\
 \textbf{description} - krótki opis definicji, określający jakiego typu danych dotyczy przeprowadzony pomiar.
 
-\subsection{operators}
+\subsubsection{operators}
 Zbiór danych w postaci prostego słownika określającego nazwę operatora oraz jego unikalny identyfikator. Użyty w procesie początkowej anonymizacji danych.
 \\
 
@@ -240,7 +265,7 @@ Zbiór danych w postaci prostego słownika określającego nazwę operatora oraz
 \textbf{operator\_name} - przyjazna użytkownikowi nazwa operatora. Podmieniona na nazwę losowego miasta w procesie anonymizacji.
 
 
-\subsection{operator\_to\_acronym\_kpi}
+\subsubsection{operator\_to\_acronym\_kpi}
 Zbiór danych określający wszystkie występujące kombinacje trójki \textit{operator, acronym, kpi\_name}. Stworzenie tej struktury wynikało ze specyfiki użytej bazy danych (Cassandra DB), która wymaga podania wszystkich trzech kluczy do otrzymania pozostałych wartości wiersza.
 \\
 \begingroup
@@ -258,25 +283,7 @@ Zbiór danych określający wszystkie występujące kombinacje trójki \textit{o
 \endgroup
 \\\\
 
-\subsection{operator\_aliases}
-Słownik opisujący translację rzeczywistych nazw operatorów na nazwy przypisanych aliasów (nazw miast). Struktura ta jest potrzebna do odtworzenia i uzupełnienia struktury w procesie anonymizacji (np. w momencie uruchamiania środowiska na nowo lub w momencie otrzymania nowych zbiorów danych).
-\\
-\begingroup
-\fontsize{10pt}{12pt}\selectfont
-
-\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | }
- \hline
- \textbf{raw} & \textbf{alias}\\
- \hline
- \textit{Text}  & \textit{Text} \\
-\hline
- T-Mobile  & NEW\_YORK \\
-\hline
-\end{tabu}
-\endgroup
-\\\\
-
-\subsection{acronym\_aliases}
+\subsubsection{acronym\_aliases}
 Analogiczna struktura do \textit{operator\_aliases} jednak tycząca się rzeczywistych wartości dla \textit{acronym}. Za aliasy posłużyły nazwy krajów.
 \\
 \begingroup
@@ -294,14 +301,14 @@ Analogiczna struktura do \textit{operator\_aliases} jednak tycząca się rzeczyw
 \endgroup
 \\\\
 
-\section{Pochodzenie danych wejściowych}
+\subsection{Pochodzenie danych wejściowych}
 Powyższe zbiory / struktury danych są rezultatem zbierania i agregowania danych z wielu źródeł jednocześnie. Dodatkowo dane otrzymane od firmy zostały wcześniej maszynowo uporządkowane (poprzez wykorzystanie licznych narzędzi i algorytmów). Wykorzystane dane w pracy nie są zatem otrzymane bezpośrednio. Tak duża różnorodność oraz ilość podejmowanych w stosunku do tych danych działań skutkuje licznymi błędami w nich (błędy, których wykrycie jest zadaniem niniejszej pracy). Z pośród wielu przyczyn tych błędów można wskazać kilka najczęściej występujących:
 \begin{itemize}
 \item \textbf{Błąd ludzki} - duży procent "paczek" danych jest przetwarzanych, sortowanych, dopasowywanych do odpowiednich baz danych przez ludzi. Dodatkowo często dochodzi do nieporozumień na etapie uzgadniana wartości i procesów biznesowych. Rezultatem tego są - zazwyczaj - długie przedziały niepasujących danych (trudniejsze do wykrycia maszynowo bez dodatkowych informacji ze względu na utrzymujący się trend).
 \item \textbf{Błąd w algorytmach} - otrzymane dane zostały wzięte z jednej z wielu baz wykorzystywanych w firmie. Dane te często są częściowo lub w całości skopiowane z bazy innego systemu, który wykorzystuje wiele algorytmów dopasowywania danych w odpowiednie miejsca. Istnieją przypadki gdzie bazując na słownikach występuje decyzja o przypisaniu danych np. do odpowiedniego operatora, bardzo często zawierając instrukcje warunkowe, które nieaktualizowane z czasem powodują złe przypisania (zazwyczaj pojedyncze punkty).
 \item \textbf{Uszkodzenia mechaniczne urządzeń} - możliwym przypadkiem są również wszelkiego rodzaju uszkodzenia sieci. Raportowane wówczas dane zawierają wszelkiego rodzaju przekłamania, różnice okresowe (zazwyczaj krótkie okresy).
 \end{itemize}
-\section{Specyfikacja danych wyjściowych}
+\subsection{Specyfikacja danych wyjściowych}
 Przetworzone przez algorytmy zbiory danych zostaną poetykietowane i posegregowane na dwa zbiory punktów:
 \begin{itemize}
 \item Punkt odstający - potencjalny punkt odstający swoją wartością od pozostałych z tego samego zbioru
@@ -324,9 +331,83 @@ Reprezentacja w bazie danych wygląda następująco:
 \end{tabu}
 \endgroup
 
-\section{Przeznaczenie danych wyjściowych}
+\subsection{Przeznaczenie danych wyjściowych}
 Z powodu braku konkretnych informacji dodatkowych opisujących zachowanie się sieci czy specyfiki zbiorów danych wykryte obserwacje odstające można jedynie przekazać do dalszej analizy.\\
 Rezultaty oczywiście mogą zostać przeprocesowane metodami do usuwania i korekcji danych jednak w tym przypadku nie ma żadnej pewności, że rezultat będzie poprawny czy w ogóle pożądany, bowiem charakterystyka danych jest na tyle specyficzna, że bez równie specyficznej wiedzy nie ma stu procentowej pewności na zgodność z oczekiwaniami.
+
+\section{Implementacja algorytmów}
+\section{Aplikacja internetowa}
+W celu analizy i przeprowadzania pojedynczych testów w łatwy i szybki sposób została stworzona aplikacja internetowa z poziomu której można wybrać konkretne zbiory danych oraz uruchomić algorytmy z zadeklarowanymi metodami wyszukiwania obserwacji odstających. Aplikacja dodatkowo umożliwia analizę oraz wizualizację zbiorów danych wraz z narzuconymi na wykres punktami sklasyfikowanymi jako odstające.
+\subsection{Struktura aplikacji}
+Aplikacja została podzielona na trzy główne warstwy, które komunikują się ze sobą oraz wymieniają dane za pomocą zapytań HTTP. Schemat komunikacji w prostu sposób ilustruje poniższy rysunek:
+\subsubsection{Warstwa frontendowa}
+Warstwa odpowiedzialna za dostarczenie użytkownikowi informacji (danych) w graficzny sposób w przeglądarce internetowej. Dostarcza interfejs graficzny, który implementuje interaktywne elementy za pomocą, których generowane są zapytania do warstwy backendowej. Ze względu na jedynie pomocniczą rolę aplikacji internetowej w całym projekcie warstwa ta jest ograniczona do niezbędnego minimum.
+\\\\
+W projekcie warstwa frontendowa odpowiada za dostarczenie możliwości wyboru  kluczy identyfikujących zbiór danych a następnie po otrzymaniu danych w odpowiedzi zwrotnej wysłanego zapytania do warstwy backendowej wyświetla zbiór punktów w formie kartezjańskiego układu współrzędnych.
+\subsubsection{Warstwa backendowa}
+Warstwa niewidoczna dla użytkownika, obsługuje zdarzenia po stronie serwera nasłuchując i odbierając zapytania HTTP. Jest też bezpośrednio połączona z systemem bazodanowym. Zarządza danymi zapisanymi w notacji JSON (Javascript Object Notation). Zadaniem tej warstwy jest uruchamianie procesów, o które warstwa frontendowa wysyła zapytania takie jak dostarczanie zbiorów danych oraz uruchamianie algorytmów wyszukiwania obserwacji odstających.
+\\\\
+Dodatkowym zadaniem warstwy bazodanowej jest uzupełnianie tabel w bazie danych na podstawie wcześniej zdefiniowanych słowników. Dzięki temu mając jedynie surowe dane dostarczone z zewnątrz cała struktura potrzebna do działania aplikacji może zostać odtworzona automatycznie.
+\subsubsection{Warstwa systemu bazy danych}
+Struktura fizyczna również umieszczona na serwerze dostarczająca informacje o zaimplementowanych strukturach danych oraz wartości przechowywanych w niej. Baza danych stanowi integralną cześć projektu.
+\subsection{Języki programistyczne}
+Podstawowym językiem wykorzystanym w warstwie frontendowej jest język Javascript \cite{javascript} w standardzie EcmaScript 6 \cite{es6} oraz składni TypeScript\cite{ts}, która zapewnia większą kontrolę nad strukturą kodu dostarczając niedostępne w podstawowej wersji Javascript typów zmiennych. W celu dostarczenia użytkownikowi przejrzystego interfejsu graficznego wykorzystany został język znaczników HTML 5(Hyper Text Markup Language)\cite{html5} oraz CSS 3 (Cascading Style Sheets) \cite{css3}.
+\\\\
+Warstwa backendowa jest napisana w języku python \cite{python}. Wybór tej technologi podyktowany jest głównie chęcią zbudowania jednolitego środowiska dla aplikacji oraz zaimplementowanych algorytmów uczenia maszynowego. Dzięki temu komunikacja i rozbudowa programu / aplikacji jest dużo prostsza.
+\\\\
+Jako system bazodanowy została wybrana Cassandra DB \cite{cassandra} ze względu na jest przystosowanie do obsługi  dużej ilości danych oraz prostej implementacji w języku python. Cassandra zapewnia szybki dostęp do dużej ilości danych jednocześnie.
+\subsection{Wykorzystane rozwiązania}
+\subsubsection{React.js}
+\small \textbf{Wersja:} 16.8.3\\
+React.js \cite{react} jest to jedno z najpopularniejszych rozwiązań przy tworzenie warstw frontendowych aplikacji. Wykorzystuje koncepcję komponentów i modularności. Jest napisany w języku JavaScript.
+\subsubsection{React vis}
+\small \textbf{Wersja:} 1.11.6\\
+Biblioteka generująca zestawy wykresów na podstawie podanego zbioru danych. Dzięki niej możliwe jest zwizualizowanie konkretnych zbiorów danych oraz ingerencja w ich zachowanie (zmiana skali, zmiana kolorów punktów bazując na dostarczonych parametrach).
+\subsubsection{Axios}
+\small \textbf{Wersja:} 0.18.0\\
+Biblioteka dostarcza podstawowe narzędzia do generowania zapytań HTTP. Ma zintegrowaną i rozwiniętą mechanikę obsługi błędów co czyni ją lepszą alternatywą niż wykorzystanie wbudowanej  w język Javascript metodyki \textit{fetch}.
+\subsubsection{Lodash}
+\small \textbf{Wersja:} 4.17.11\\
+Biblioteka dostarcza szereg funkcji używanych do zarządzania obiektami w języku Javascript, ich organizacji oraz transformacji.
+\subsubsection{Preprocessor SASS}
+\small \textbf{Wersja:} 0.23.1\\
+Preprocessor SASS jest językiem nadrzędnym nad CSS i jest do niego kompilowany. Dostarcza dodatkowe możliwości zarządzania atrybutami i zmiennymi w środowisku CSS co upraszcza i usprawnia proces tworzenia aplikacji.
+\subsubsection{Falcon}
+\small \textbf{Wersja:} 0.18.0\\
+Paczka służąca do stworzenia serwera HTTP w środowisku python. Obsługuje podstawowe zadania tworzenia tzw. endpointów, czyli wcześniej zdefiniowanych ścieżek w postaci adresu HTTP, w których zaimplementowane jest obsługa takich zdarzeń jak GET, POST, PUT. Mechanizm ten jest wykorzystywany do komunikacji z warstwą frontendową.
+\subsubsection{Click}
+\small \textbf{Wersja:} 0.18.0\\
+Paczka pozwalająca na proste tworzenie CLI (Command Line Interface), czyli konsolowego interfejsu, z poziomu którego za pomocą zdefiniowanych komend uruchamia się pojedyncze zadania.
+\subsubsection{Figgypy}
+\small \textbf{Wersja:} 0.18.0\\
+Paczka wykorzystywana do zarządzania globalną konfiguracją serwera. Dostarcza zestaw parserów, która wcześniej zdefiniowane wartości zapisane w pliku tekstowym jest w stanie zinterpretować i dostarczyć odpowiednie wartości do wykonywalnego kodu. Plik konfiguracyjny zawiera m.in parametry połączenia z bazą danych (nazwa użytkownika, hasło itp).
+\subsubsection{Cassandra driver}
+\small \textbf{Wersja:} 0.18.0\\
+Paczka obługujące połączenie bazodanowe z systemem bazy danych Cassandra DB. Odpowiada za nawiązywanie i zrywanie połączeń oraz tworzenie tzw. query, na podstawie których otrzymywane są żądane dane z bazy danych.
+\subsection{Wykorzystane narzędzia}
+Do poprawnego uruchomienia, tworzenia i działania aplikacji potrzebny jest szereg narzędzi programistycznych.
+\subsubsection{NPM (Node Package Manager), Yarn}
+\small \textbf{Wersja npm:} 0.18.0\\\
+\small \textbf{Wersja yarn:} 0.18.0\\
+Node Package Manager (NPM) oraz Yarn są to podobne narzędzia. Służą one do zarządzania zależnościami (paczkami, bibliotekami) warstwy frontendowej. Za ich pomocą można instalować nowe paczki, aktualizować już istniejące czy usunąć je z projektu.
+\subsubsection{Pipenv}
+\small \textbf{Wersja:} 0.18.0\\
+Odpowiednik NPM / Yarn dla warstwy backendowej. Pipenv jest nadrzędnym narzędziem biblioteki pip oraz virtenv. Poza zarządzniem zależnościami i paczkami pipenv również tworzy wirtualne środowisko programistyczne dla języka python.
+\subsubsection{TS Lint, SASS Lint, Prettier}
+\small \textbf{Wersja ts-lint:} 0.18.0\\\
+\small \textbf{Wersja sass-lint:} 0.18.0\\
+\small \textbf{Wersja prtettier:} 0.18.0\\
+Zestaw narzędzi, który pozwala na utrzymanie kodu aplikacji w uporządkowany sposób za pomocą ustalonych wcześniej reguł. Dodatkowo implementują one narzędzia automatyzujące proces formatowanie kodu.
+\subsubsection{Webpack}
+\small \textbf{Wersja:} 0.18.0\\
+Narzędzie zarządzające transformacją kodu warstwy frontendowej. Transformuje język wyższego rzędu (es6 oraz Typescript) na język Javascript zrozumiały dla współczesnych przeglądarek. Dodatkowo optymalizuje rozmiar plików skryptowych a także dostarcza narzędzia programistyczne takie jak testowy serwer czy walidacja kod uw czasie rzeczywistym.
+\subsubsection{GIT, Github}
+\small \textbf{Wersja GIT:} 0.18.0\\
+GIT jest to system kontroli wersji dostępny z poziomu konsoli. Tworzy lokalne repozytorium zawierające kod aplikacji. Zapewnia bezpieczeństwo kodu i szybki dostęp do zapisanych zmian.
+\\\\
+Github jest to aplikacja webowa, która dostarcza zdalne repozytorium (zintegrowany z lokalnym) co zapewnia dostęp do napisanego kodu niezależnie od miejsca. Zapewnia też podstawowy system kopii zapasowej.
+\subsection{Wymagania funkcjonalne}
+\subsection{Wymagania niefunkcjonalne}
 
 \bibliography{bibliografia}
 \end{document}
