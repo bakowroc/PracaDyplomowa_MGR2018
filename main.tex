@@ -87,10 +87,13 @@ Startowa pozycja okna to punkt 0 na osi X (dziedzina). Okno przesuwa się w praw
 \\ \\
 Działanie metody wizualizuje poniższy rysunek:
 
-\begin{figure}[h!]
-\includegraphics[scale=0.7]{okno_czasowe}
-\caption{Działanie metody podziału na okna czasowe}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{okno_czasowe}
+  \end{center}
+  \caption{Działanie metody podziału na okna czasowe}
 \end{figure}
+
 
 Szerokość okna przyjęto jako 5 a długość kroku jako 2. Można zauważyć, że okna różnią się obszarem zajmowanej dziedziny co wynika z niejednorodnego rozrzutu punktów.
 \\
@@ -109,9 +112,11 @@ Podział na klastry definiuje również pojęcie centroidów (ang. centroids), k
 
 Podział serii danych ze stemplem czasowym na pojedyncze klastry wraz z centroidami można zobaczyć na poniższym rysunku:
 
-\begin{figure}[h!]
-\includegraphics[scale=0.7]{KMean}
-\caption{Klasyfikacja zbioru danych}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{KMean}
+  \end{center}
+  \caption{Klasyfikacja zbioru danych}
 \end{figure}
 
 Informację o przynależności punktu do konkretnego klastra można wykorzystać do wyznaczenia punktów odstających lokalnie (w jednym klastrze). \\
@@ -134,9 +139,11 @@ Metoda ta ma jednak pewną wadę. Idealnymi zbiorami danych, dla których można
 \\\\
 Wyznaczoną linię regresji przedstawia poniższy rysunek:
 
-\begin{figure}[h!]
-\includegraphics[scale=0.7]{linear_reg}
-\caption{Wyznaczenie prostej regresji dla zbioru danych}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{linear_reg}
+  \end{center}
+  \caption{Wyznaczenie prostej regresji dla zbioru danych}
 \end{figure}
 
 \section{Algorytm Isolation Forest}
@@ -335,11 +342,18 @@ Reprezentacja w bazie danych wygląda następująco:
 Z powodu braku konkretnych informacji dodatkowych opisujących zachowanie się sieci czy specyfiki zbiorów danych wykryte obserwacje odstające można jedynie przekazać do dalszej analizy.\\
 Rezultaty oczywiście mogą zostać przeprocesowane metodami do usuwania i korekcji danych jednak w tym przypadku nie ma żadnej pewności, że rezultat będzie poprawny czy w ogóle pożądany, bowiem charakterystyka danych jest na tyle specyficzna, że bez równie specyficznej wiedzy nie ma stu procentowej pewności na zgodność z oczekiwaniami.
 
-\section{Implementacja algorytmów}
 \section{Aplikacja internetowa}
 W celu analizy i przeprowadzania pojedynczych testów w łatwy i szybki sposób została stworzona aplikacja internetowa z poziomu której można wybrać konkretne zbiory danych oraz uruchomić algorytmy z zadeklarowanymi metodami wyszukiwania obserwacji odstających. Aplikacja dodatkowo umożliwia analizę oraz wizualizację zbiorów danych wraz z narzuconymi na wykres punktami sklasyfikowanymi jako odstające.
 \subsection{Struktura aplikacji}
 Aplikacja została podzielona na trzy główne warstwy, które komunikują się ze sobą oraz wymieniają dane za pomocą zapytań HTTP. Schemat komunikacji w prostu sposób ilustruje poniższy rysunek:
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{layers}
+  \end{center}
+  \caption{Schemat komunikacji między warstwami aplikacji}
+\end{figure}
+
 \subsubsection{Warstwa frontendowa}
 Warstwa odpowiedzialna za dostarczenie użytkownikowi informacji (danych) w graficzny sposób w przeglądarce internetowej. Dostarcza interfejs graficzny, który implementuje interaktywne elementy za pomocą, których generowane są zapytania do warstwy backendowej. Ze względu na jedynie pomocniczą rolę aplikacji internetowej w całym projekcie warstwa ta jest ograniczona do niezbędnego minimum.
 \\\\
@@ -387,27 +401,96 @@ Paczka obługujące połączenie bazodanowe z systemem bazy danych Cassandra DB.
 \subsection{Wykorzystane narzędzia}
 Do poprawnego uruchomienia, tworzenia i działania aplikacji potrzebny jest szereg narzędzi programistycznych.
 \subsubsection{NPM (Node Package Manager), Yarn}
-\small \textbf{Wersja npm:} 0.18.0\\\
-\small \textbf{Wersja yarn:} 0.18.0\\
 Node Package Manager (NPM) oraz Yarn są to podobne narzędzia. Służą one do zarządzania zależnościami (paczkami, bibliotekami) warstwy frontendowej. Za ich pomocą można instalować nowe paczki, aktualizować już istniejące czy usunąć je z projektu.
 \subsubsection{Pipenv}
-\small \textbf{Wersja:} 0.18.0\\
 Odpowiednik NPM / Yarn dla warstwy backendowej. Pipenv jest nadrzędnym narzędziem biblioteki pip oraz virtenv. Poza zarządzniem zależnościami i paczkami pipenv również tworzy wirtualne środowisko programistyczne dla języka python.
 \subsubsection{TS Lint, SASS Lint, Prettier}
-\small \textbf{Wersja ts-lint:} 0.18.0\\\
-\small \textbf{Wersja sass-lint:} 0.18.0\\
-\small \textbf{Wersja prtettier:} 0.18.0\\
 Zestaw narzędzi, który pozwala na utrzymanie kodu aplikacji w uporządkowany sposób za pomocą ustalonych wcześniej reguł. Dodatkowo implementują one narzędzia automatyzujące proces formatowanie kodu.
 \subsubsection{Webpack}
-\small \textbf{Wersja:} 0.18.0\\
 Narzędzie zarządzające transformacją kodu warstwy frontendowej. Transformuje język wyższego rzędu (es6 oraz Typescript) na język Javascript zrozumiały dla współczesnych przeglądarek. Dodatkowo optymalizuje rozmiar plików skryptowych a także dostarcza narzędzia programistyczne takie jak testowy serwer czy walidacja kod uw czasie rzeczywistym.
 \subsubsection{GIT, Github}
-\small \textbf{Wersja GIT:} 0.18.0\\
 GIT jest to system kontroli wersji dostępny z poziomu konsoli. Tworzy lokalne repozytorium zawierające kod aplikacji. Zapewnia bezpieczeństwo kodu i szybki dostęp do zapisanych zmian.
 \\\\
 Github jest to aplikacja webowa, która dostarcza zdalne repozytorium (zintegrowany z lokalnym) co zapewnia dostęp do napisanego kodu niezależnie od miejsca. Zapewnia też podstawowy system kopii zapasowej.
 \subsection{Wymagania funkcjonalne}
-\subsection{Wymagania niefunkcjonalne}
+\subsubsection{Wybór kluczy zbioru danych}
+\textbf{Nr wymagania:} 1 
+\\\\
+\textbf{Przesłanka}\\
+Aby otrzymać dane żądanego zbioru danych i je wyświetlić należy wybrać zestaw składający się z trzech kluczy reprezentujących zbiór danych.
+\\\\
+\textbf{Opis}\\
+\textbf{Warstwa frontendowa} \\
+Użytkownik ma do wyboru trzy selektory:
+\begin{itemize}
+\item Operator
+\item Akronim
+\item KPI Name
+\end{itemize}
+
+Wszystkie selektory poza selektorem operatora są zablokowane. Selektory odblokowują się po wyborze wartości w selektorze poprzednim zgodnie z powyższą hierarchią. Zapewniany jest tym sposobem dostęp do danych, które są reprezentowane przez wybrane klucze. Po wyborze wartości w ostatnim selektorze (KPI Name) wysyłane jest żądanie do warstwy backendowej. 
+\\\\
+\textbf{Warstwa backendowa}
+Po odebraniu żądania z zawartymi informacjami o kluczach w formacie JSON wysyłane jest zapytanie do bazy danych a następnie zwracane wszystkie otrzymane wartości. Dane te są wyświetlane przez warstwę frontendową zgodnie z wymaganiem nr. 2.
+\\\\\noindent\rule{\textwidth}{2pt}
+\subsubsection{Wyświetlanie danych w formacie wykresu w układzie kartezjańskim}
+\textbf{Nr wymagania:} 2
+\\\\
+\textbf{Przesłanka}\\
+Wyświetlanie danych w graficzny sposób pozwala na lepszą analizę zbioru danych.
+\\\\
+\textbf{Opis}\\
+\textbf{Warstwa frontendowa} \\
+Po otrzymaniu punktów wybranego zbioru danych na ekranie aplikacji pojawia się wykres składający się z dwóch osi:
+\begin{itemize}
+  \item Oś X - Czas w postaci stempla czasowego
+  \item Oś Y - Numeryczna wartość punktu 
+\end{itemize}
+Punkty zaznaczone są w postaci jednolitych kropek połączonych prostymi liniami. Wykres można dopasować do okna przeglądarki lub rozciągnąć wraz z zastosowaniem suwaka poziomego. Połączenia między punktami można ukryć lub pokazać na żądanie użytkownika.
+\\\\\noindent\rule{\textwidth}{2pt}
+\subsubsection{Uruchamianie metod wyszukiwania obserwacji odstających}
+\textbf{Nr wymagania:} 3
+\\\\
+\textbf{Przesłanka}\\
+Wybrane i uruchomienie metody wyszukiwania obserwacji odstających stanowi podstawę projektu i jest niezbędne do analizy i realizacji celu pracy.
+\\\\
+\textbf{Opis}\\
+\textbf{Warstwa frontendowa}\\
+Po wyborze i wyświetleniu zbioru danych dostępna jest możliwość wyboru zdefiniowanej i zaimplementowanej metody wyszukiwania obserwacji odstających. PO zatwierdzeniu tej operacji wysyłane jest żądane do warstwy backendowej.
+\\\\
+\textbf{Warstwa backendowa}\\
+Po otrzymaniu zapytania o uruchomienie żądanej metody wraz z kluczami zbioru danych wysyłane jest zapytanie o dane do bazy danych a następnie uruchamiania jest wymagana metoda. Niezależnie od metody po skończeniu działania algorytmu danymi wyjściowymi jest cały zbiór danych z dodatkowo dołączoną informacją do każdego punkty o tym, czy jest on potencjalnym punktem odstającym (w formie Boolean: True / False). Tak zmodyfikowany zbiór danych jest zwracany do warstwy frontendowej.
+\\\\\noindent\rule{\textwidth}{2pt}
+\subsubsection{Nanoszenie punktów odstających na wykres}
+\textbf{Nr wymagania:} 4
+\\\\
+\textbf{Przesłanka}\\
+Wizualizacja miejsc, w których punkty odstające zostały znalezione pozwala lepiej przeanalizować i zrozumieć działanie wybranych metod i algorytmów.
+\\\\
+\textbf{Opis}\\
+\textbf{Warstwa frontendowa}\\
+Po zwróceniu zmodyfikowanych danych przez warstwę backendową zgodnie z wymaganiem nr. 4 tworzony jest wykres tą samą metodą co w wymaganiu nr. 2 z modyfikacjami koloru dotyczących punktów:
+\begin{itemize}
+  \item punkty z informacją w dodatkowym polu równą True na czerwono
+  \item pozostałe punkty na szaro
+\end{itemize}
+\section{Implementacja metod i algorytmów}
+\subsection{Algorytm uruchamiania metody w pętli}
+Ze względu na pewną losowość wykorzystanych algorytmów uczenia maszynowego jednokrotne uruchomienie algorytmów na zbiorze danych może nie być jednoznacznie rozstrzygające (nigdy nie będzie, jednak można zwiększyć jego wiarygodność) został zaimplementowany algorytm uruchamiający jedną metodę wyszukiwania obserwacji odstających kilkukrotnie (w pętli). Ilość iteracji jest zadana z góry, niezmienność wyników została zaobserwowana w granicach 10 -15 razy. 
+\\\\
+Działanie pojedynczej iteracji algorytmu można przedstawić w następujący sposób:
+\begin{itemize}
+  \item uruchom przekazaną metodę wyszukiwania anomalii
+  \item zapamiętaj zwrócone przez tę metodę punkty odstające
+  \item w kolejnych iteracjach dodawaj wystąpienia lub nowe punkty (jeśli się pojawiły)
+  \item sklasyfikuj jedynie punkty jako odstające jeśli wystąpiły w 80 procentach przypadków (dla 10 iteracji wszystkie punkty, który wystąpiły więcej niż 8 razy są uznawane za odstające)
+  \item zwróć wynik
+\end{itemize}
+
+Działanie algorytmu przedstawić można jako schemat blokowy:
+\subsection{Metoda odległości od centroidów z wykorzystaniem algorytmu KMean}
+\subsection{Metoda ilości punktów w klastrze z wykorzystaniem algorytmu KMean}
+\subsection{Metoda regresji liniowej z wykorzystaniem podziału na okna czasowe}
 
 \bibliography{bibliografia}
 \end{document}
