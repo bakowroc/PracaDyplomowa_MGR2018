@@ -102,8 +102,7 @@ Dodatkowo widać, że istnieją części wspólne dla sąsiadujących podzbioró
 W zależności od zastosowanego algorytmu na podzbiorach metoda ta powinna dzielić zbiór danych na co najmniej 10 podzbiorów lecz należy pamiętać, że ilość punktów w danym podzbiorze (szerokość okna) nie powinna być mniejsza niż 2-5 procent szerokości całego zbioru danych.
 \\
 Zastosowanie tej metody zatem jest opłacalne jedynie, gdy badany zbiór danych posiada sporą ilość wartości (liczonych w setkach). Dla mniejszych zbiorów danych stosowanie tej metody nie ma sensu. 
-\\ \\
-Algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
+
 \section{Algorytm K-Mean}
 Algorytm opierający swoje działanie na podziale zbioru danych na podzbiory nazywane klastrami (ang. clusters). Przydział punktów do konkretnego klastra polega na obliczaniu jego odległości względem punktów sąsiednich (odległość euklidesowa). \\ \\
 Algorytm przyjmuje wiele parametrów, jednak najważniejszym jest ilość klastrów, na które należy podzielić zbiór danych.
@@ -128,6 +127,19 @@ Jednym ze sposobów określania punktu jako odstającego jest obliczenie odległ
 \item \textbf{odrzucić punkty najbardziej odległe} - trochę prostsza metoda, zakłada, że każdy zbiór danych zawiera pewne ilości punktów odstających, dlatego klasyfikuje najbardziej oddalone punkty jako odstające (biorąc pod uwagę wszystkie punkty, ze wszystkich klastrów, posortowane wartościami odległości od swoich centroidów). Ilość wybranych punktów jest zadana z góry, zazwyczaj około 5-10. Można by zakładać, że takie podejście jest niepoprawne, dlatego rekomenduje się przeprowadzenie wielokrotnych przeliczeń tego samego zbioru danych a następnie uśrednienie wartości otrzymanych (np. przeprowadzenie kilkukrotnych iteracji a następnie uwzględnienie punktów jako dostające jedynie wtedy, gdy wystąpiły one w 90 procentach przeprowadzonych iteracji)  \cite{kmean_dist}. 
 \end{itemize}
 \subsection{Wykorzystanie całych klastrów}
+Kolejną metodą wykorzystującą algorytm klasteryzacji KMean jest metoda klasyfikująca całe klastry jako odstające. Wynika to z założenia, że testowe zbiory danych mogą zawierać pewne przedziały mocno niepasujących, pojedynczych danych (klaster bardzo odległy od pozostałych klastrów). Jeśli zatem klaster zawiera znacznie małą ilość punktów (w porównaniu do ilości zdefiniowanych klastrów oraz wielkości zbioru danych) to istnieje duże prawdopodobieństwo, że zawiera on jedynie punkty odstające. \\\\
+Metoda defniuje dodatkowy parametr opisujący procentową liczbę punktów zawartych w klastrze jako warunek, na podstawie którego stwierdzana jest klasyfikacja klastra jako całego zbioru punktów odstających.
+\\\\
+Tak sklasyfikowany zbiór przedstawia poniższy rysunek:
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{linear_reg}
+  \end{center}
+  \caption{Wyznaczenie prostej regresji dla zbioru danych}
+\end{figure}
+
+Geneza metody wynika z pewnej wiedzy o prawdopodobnych wystąpieniach punktów odstających w otrzymanych zbiorach danych i jest w pełni autorska (nie uwzględniając algorytmu KMean).
+
 \section{Algorytm regresji liniowej}
 Algorytm regresji liniowej jest najprostszym z wybranych algorytmów. Na zadanym zbiorze danych wyznaczana jest prosta regresji za pomocą metody najmniejszych kwadratów, czyli funkcja liniowa reprezentująca oszacowane wartości bazując na zadanym zbiorze danych. 
 \\\\
@@ -475,10 +487,50 @@ Po zwróceniu zmodyfikowanych danych przez warstwę backendową zgodnie z wymaga
   \item pozostałe punkty na szaro
 \end{itemize}
 \section{Implementacja metod i algorytmów}
+\section{Wykorzystane technologie}
+\subsubsection{numpy}
+\subsubsection{sckit-learn}
+\subsection{Przygotowanie zbioru uczącego}
+Posiadane dane oprócz kluczy zawierają zaledwie dwie cechy - czas i wartość. Obie z tych cech są cechami słabymi ze względu na ich zbyt duży rozrzut i dużą unikalność - stempel czasowy jest inny dla każdego punktu a rozrzut wartości często jest bardzo duży (dodatkowo wartości bardzo często są równie unikatowe co czas). \\
+Aby proces uczenia maszynowgo przez wybrane algorytmy był trochę bardziej efektywny został zaimplementowany algorytm, który dopasuje i doda dodatkową cechę bazującą na stemplu czasowym. Zostały zaimplementowane trzy takie cechy - do wyboru w zależności od zbioru danych:
+\begin{itemize}
+	\item dzien miesiaca (np. 28 dzien miesiaca to cecha 28)
+	\item dzien tygodnia (np. wtorek to cecha 2)
+	\item kombinacja dnia miesiące i samego miesiąca (np. 09.05 to cecha 0905)
+\end{itemize}
+Powoduje to, że w zależności od wybranej cechy można zwiększyć podobieństwo punktów do siebie. 
+\\\\
+Wybranie tych cech idzie łącznie z założeniem, że zbiór danych posiada jakikolwiek trend. Przykładowy kod ustalający dodatkową cechę może być zaimplementowany w poniższy sposób:
+\\
+\begin{lstlisting}
+TODO
+\end{lstlisting}
+
+Końcowa strutkura pojedynczego punktu wygląda zatem następująco:
+\\
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] |}
+\hline
+\textbf{value} & \textbf{timestamp} & \textbf{feature} \\
+\hline
+\textit{Long}  & \textit{Long}  & \textit{Long} \\
+\hline
+\end{tabu}
+\endgroup
+
 \subsection{Algorytm uruchamiania metody w pętli}
 Ze względu na pewną losowość wykorzystanych algorytmów uczenia maszynowego jednokrotne uruchomienie algorytmów na zbiorze danych może nie być jednoznacznie rozstrzygające (nigdy nie będzie, jednak można zwiększyć jego wiarygodność) został zaimplementowany algorytm uruchamiający jedną metodę wyszukiwania obserwacji odstających kilkukrotnie (w pętli). Ilość iteracji jest zadana z góry, niezmienność wyników została zaobserwowana w granicach 10 -15 razy. 
 \\\\
-Działanie pojedynczej iteracji algorytmu można przedstawić w następujący sposób:
+Działanie pojedynczej iteracji algorytmu można zaimplementować w następujący sposób:
+
+\begin{lstlisting}
+TODO
+\end{lstlisting}
+
+Końcowa struktura pojedynczego punktu wygląda zatem następująco:
+
 \begin{itemize}
   \item uruchom przekazaną metodę wyszukiwania anomalii
   \item zapamiętaj zwrócone przez tę metodę punkty odstające
@@ -488,9 +540,112 @@ Działanie pojedynczej iteracji algorytmu można przedstawić w następujący sp
 \end{itemize}
 
 Działanie algorytmu przedstawić można jako schemat blokowy:
+\subsection{Podział zbioru danych na okna czasowe}
+Zgodnie z opisem w punkcie 2.1 algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
+\begin{lstlisting}
+TODO
+\end{lstlisting}
 \subsection{Metoda odległości od centroidów z wykorzystaniem algorytmu KMean}
+Metoda opisana w punkcie 2.2.1 została w zaimplementowana w całości, z uwzględnieniem dwóch warunków defniowania punktu jako odstający. Wybór jednej z nich odbywa się na żądanie użytkownika. W procesie testowania metod oba warunki są używane w celu porównania ich działania.\\
+Końcowe działanie metody można przedstawić na prsotym przykładzie:
+\begin{itemize}
+	\item badaniu został poddany zbiór zawierający 30 punktów. Liczba klastrów została ustalona na 2. Podział wygląda następująco:
+	\item zostały obliczone odległości od centroidów klastrów a następnie obliczone potrzebne miary:
+	\item w zależności od wyboru metody punkty sklasyfikowane jako odstające po pierwszej iteracji zostały zaznaczone na czerwono:
+\end{itemize}
 \subsection{Metoda ilości punktów w klastrze z wykorzystaniem algorytmu KMean}
+Metoda opisana w punkcie 2.2.2 została zaimplementowana zgodnie z opisem uwzględniając obliczenie paramaterów, które są wymagane do obiczenia warunku (progu):
+\begin{itemize}
+	\item stosunek wielkości zbioru danych do ilości klastrów
+	\item ilość punktów w każðym klastrze
+	\item średniej liczby punktów na klaster
+\end{itemize}
+Znając powyższe parametry oraz zadany z góry warunek (próg) można zdefniować równanie, na podstawie którego rozpatrywane są pojedyncze klastry:
+\\
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{linear_reg}
+  \end{center}
+  \caption{Wyznaczenie prostej regresji dla zbioru danych}
+\end{figure}
+
+Implementacja w kodzie może wyglądać następująco:
+
+\begin{lstlisting}
+TODO
+\end{lstlisting}
+
 \subsection{Metoda regresji liniowej z wykorzystaniem podziału na okna czasowe}
+Metoda polegająca na obliczanie obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.2). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.2), próg 80 procent lub więcej. \\\\
+Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (3.3.2) łączenie tych dwóch podejść jest już zbędne.
+\\\\
+Działanie algorytmu można zwizualizować w następujący sposób:
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{linear_reg}
+  \end{center}
+  \caption{Wyznaczenie prostej regresji dla zbioru danych}
+\end{figure}
+\chapter{Przeprowadzanie badań}
+\section{Prygotowanie środowiska}
+Pierwszym krokiem przeprowadzenia badań i testów jest przygotowanie śrdowiska wraz z implementacją. Należy wybrać metody wyszukiwania obserwacji odstających a następnie określić ich parametry jako zmienne lub stałe.
+\\\\
+Przed przystąpieniem do testów zostały wybrane tylko te zbiory danych, które zawierają więcej niż 800 pojedynczcyh punktów (dane z conajmniej dwóch lat). Dzięki temu wszystkie wybrane algorytmy powinny działać na takich samych zasadach (odpowiednia ilość punktów w klastrach a trend, jeśli istnieje, został już wyznaczony, możliwość dobrego podziału na okna czasowe).
+\subsection{Wybór parametrów testowych}
+Parametry testowe są to wszystkie parametry jakich wymaga metoda do poprawnego działania. Ze względu na dużą ilość danych parametry zmienne powinny przyjmować maksymalnie 3 różne wartości z różnego zakresu.\\
+Z racji tego, że wielkości zbiorów danych są wybrane tak, aby ilość punktów zawierających się w nich była większa niż 700 można z góry narzucić pewne wartości parametrów bez zbędnego wyliczania ich indywidualnie dla każdego zbioru danych.
+\\\\
+Przyjęto kolejne parametry:\\
+\textbf{Metoda odległości od centroidu (3.3.4)}
+\begin{itemize}
+	\item ilość klastrów: 20, 40
+	\item wszystkie trzy dodatkowe cechy (3.3.1)
+	\item oba warunki klasyfikacji (1.5 i 3 jako parametry warunku)
+\end{itemize}
+Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 24
+\\\\
+\textbf{Metoda ilości punktów w klastrze (3.3.5)}
+\begin{itemize}
+	\item ilość klastrów: 20, 40
+	\item wszystkie trzy dodatkowe cechy (3.3.1)
+	\item dwa parametry dla warunku metody: 30 i 50 procent
+\end{itemize}
+Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 12
+\\\\
+\textbf{Metoda regresji liniowej z oknem czasowym (3.3.6)}
+\begin{itemize}
+	\item wszystkie trzy dodatkowe cechy (3.3.1)
+	\item dwa parametry dla warunku metody: 1.5 i 3
+	\item dwie różne wersje parametrów okna czasowego: krok 2, szerokość okna 22 oraz krok 5, szerokość okna 50
+\end{itemize}
+Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 12
+\\\\
+\subsection{Wybór zbiorów danych}
+Docelowo wszystkie zbiory danych zostaną poddane badaniom, jednak wnioski zostaną oparte tylko na kilku wybranych. O wyborze zbioru będzie decydowała głównie jego charakterystyka oraz odmienność od innych. W końcowym podsumowaniu powinny się znależć zbiory bez oraz z mocno wyznaczonym trendem czy z wartościami mocno wahającymi się oraz z częstymi wygaśnięciami.\\
+Specyfika oraz powód wyboru każdego wybranego zbioru zostanie opisana wraz z przedstawieniem jego wyników.
+\section{Stworzenie programu automatyzującego}
+Ważną częęcią etapu uruchamiania testów i badań jest stworzenie programu, który w sposo” automatyczny będzie w stanie uruchomić wcześniej zdefinowane metody kolejno z różnymi parametrami. WYnika to z tego, że cały proces uruchamiania metod jest czasochłonny. Uruchamianie kolejno metod ręcznie jest możliwe, jednak nieoptymalne (brane jest pod uwagę ręczne uruchomienie pojedynczych testów tylko w momencie chęci potwierdzenia wyniku). 
+
+\subsection{System zapisywania do bazy danych}
+Program automatyzujący ma za zadanie uruchomić badanie / test a następnie zdefiniowane parametry końcowe zapisać w bazie danych. Końcowe parametry każdego pojedynczego testu to:
+\begin{itemize}
+	\item trzy klucze identyfikujące zbiór danych
+	\item czas trwania (data rozpoczęcia i zakończenia)
+	\item tablica identyfikatorów sklasyfikowanych punktów odstających
+	\item parametry, z jakimi test został uruchomiony
+\end{itemize}
+
+\subsection{System raportowania}
+Po przeprowadzeniu wzystkich zdefiniowanych testów zostanie uruchomiona procedura tworzenia raportów. Pojedynczy raport tyczy się jednego zbioru danych oraz metod jakie zostały na nim uruchomione. W skład tej procedury wchodzą:
+\begin{itemize}
+	\item agregacja sklasyfikowanych punktów odstających (ilość, wystąpienia, powtórzenia)
+	\item agregacja czasów trwania pojedynczych testów (średni czas, najkrótszy, najdłuższy)
+\end{itemize}
+Pojedynczy raport jest zapisany jako tabela w formacie CSV.
+\section{Wybór kryteriów porównania}
+\section{Porównanie metod wyszukiwania obserwacji odstających}
+\section{Wnioski}
+\chapter{Podsumowanie i mowa końcowa}
 
 \bibliography{bibliografia}
 \end{document}
