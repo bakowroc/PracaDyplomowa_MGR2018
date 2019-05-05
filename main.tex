@@ -67,8 +67,9 @@
 \chapter{Wstęp}  
 Obserwację odstającą można zdefiniować jako punkt lub zbiór punktów, które swoimi wartościami różnią się od wartości punktów je otaczających. Obserwację taką można definiować lokalnie, gdzie anomalie to pojedyncze punkty a zbiorem porównawczym są punkty w bliskim sąsiedztwie lub bardziej globalnie, gdzie do analizy konkretnych przedziałów potrzebna jest wiedza o całym zbiorze (np. analiza miesięcznego trendu w danych ze stemplem czasowym). 
 \\ \\
-Występowanie danych odstających (anomalii, outliers) jest jednym z najczęściej spotykanym problemem w środowisku zajmującym się zbieraniem oraz analizą danych. Każde przeprowadzone badanie posiada odchyły w danych, miejsca, które nie pasują do ogólnie ukształtowanego trendu. Widać to szczególnie w środowiskach mniej kontrolowanych, takich, w których występowanie czynników zewnętrznych jest duże i nieprzewidywalne (duży rozrzut losowości). \\ \\
-Występowanie tego typu anomalii ma negatywny wpływ na proces analizy i przygotowania takiego zbioru danych. Powoduje to bowiem, że rozkład zbioru danych jest przekłamany - z powodu występowania zawyżeń lub zaniżeń takich miar jak średnia czy mediana. Z punkty widzenia statystyki nieciągły, niejednorodny czy też niespójny zbiór danych nie może być wiarygodny i rzetelny \cite{outliers-impact}.
+Występowanie danych odstających (anomalii, outliers) jest jednym z najczęściej spotykanym problemem w środowisku zajmującym się ich zbieraniem oraz analizą. Każde przeprowadzone badanie posiada odchyły, czyli miejsca, które nie pasują do ogólnie ukształtowanego trendu. Widać to szczególnie w środowiskach mniej kontrolowanych, takich, w których występowanie czynników zewnętrznych jest duże i nieprzewidywalne (duży rozrzut losowości). 
+\\\\
+Występowanie tego typu anomalii ma negatywny wpływ na proces analizy i przygotowania takiego zbioru danych. Powoduje to bowiem, że rozkład punktów jest przekłamany - z powodu występowania zawyżeń lub zaniżeń takich miar jak średnia czy mediana. Z punktu widzenia statystyki nieciągły, niejednorodny czy też niespójny zbiór danych nie może być wiarygodny i rzetelny \cite{outliers-impact}.
 \\ \\
 Kolejnym powiązanym problem jest problem zarządzania wykrytymi już anomaliami. Zazwyczaj stosuje się dwie metody: próba naprawienia punktu lub jego usunięcie. W zależności od charakteru i genezy danych można wykonać obie operacje, jedną z nich lub żadną. Podjęcie takiej decyzji wiąże się bezpośrednio z tym co jest badane oraz do czego tego typu zbiór danych będzie wykorzystywany. \\
 Naprawa zazwyczaj polega na wykorzystaniu statycznych miar takich jak wartość średnia, mediana czy odchylenie standardowe. Istnieje wiele sprawdzonych i opublikowanych metod do tego służących. \\
@@ -81,9 +82,9 @@ Celem niniejszej pracy jest zaprojektowanie oraz zaimplementowanie systemu, któ
 
 \section{Zakres pracy}
 \subsection{Przygotowanie danych}
-Pierwszym etapem niniejszej pracy jest zebranie rzeczywistych danych od firmy zajmującej się ich zbieraniem i przetwarzaniem.  \\
+Pierwszym etapem jest zebranie rzeczywistych danych od firmy zajmującej się ich zbieraniem i przetwarzaniem.  \\
 Wartości oraz opisy pewnych cech tych danych są w dużej mierze tajne i zawierają poufne informacje, dlatego przedstawienie ich w niezmienionej formie byłoby poważnym naruszeniem umowy oraz klauzuli poufności zawartych z firmą. \\
-Dlatego kolejnym krokiem jest zaprogramowanie algorytmu, programu, który będzie w stanie zmienić strukturę tych danych, w szczególności przypisać nazwy rzeczywistych operatorów oraz identyfikatorów urządzeń zbierających dane do nazw losowych, którymi posługiwać będzie można się w sposób swobodny w dalszych etapach pracy. \\
+Kolejnym krokiem więc jest zaprogramowanie algorytmu, programu, który będzie w stanie zmienić strukturę tych danych, w szczególności przypisać nazwy rzeczywistych operatorów oraz identyfikatorów urządzeń zbierających dane do nazw losowych, którymi posługiwać będzie można się w sposób swobodny w dalszych etapach pracy. \\
 Zdobyte dane zawierają również szereg dodatkowych informacji, które powinny zostać odrzucone ze względu na małą wartość informacyjną i zachowanie ich jest niepotrzebne do realizacji celu pracy. Dlatego kolejnym i ostatnim krokiem w przygotowaniu danych jest stworzenie nowych struktur, tabel i schematów a następnie przekopiowanie tych wartości, które są niezbędne. Ilość danych (około pół miliona wierszy) jest na tyle duża, że wykorzystanie mechanizmów do zarządzania Big Data jest niezbędne \cite{cassandra}\cite {cassandra-driver}.
 
 \subsection{Wybór technologii i algorytmów}
@@ -98,11 +99,11 @@ Końcowym etapem pracy jest napisanie raportu porównawczego oraz wybór cech, k
 Na potrzeby lepszej wizualizacji porównań oraz działania poszczególnych algorytmów do raportu zostaną dołączone spore ilość wykresów, data gramów oraz tabel.
 
 \chapter{Przegląd literatury}
-Specyfika dostarczonych danych, które są wykorzystywane do przeprowadzenia badań i symulacji wybranych metod narzuca pewne ograniczenia co do wyboru i wykorzystania algorytmów. Z powodu braku jakichkolwiek wzorcowych zbiorów danych, które mogłyby posłużyć jako zbiory uczące. \\
+Specyfika dostarczonych danych, które są wykorzystywane do przeprowadzenia badań i symulacji wybranych metod narzuca pewne ograniczenia co do wyboru i wykorzystania algorytmów. Wynika to z braku jakichkolwiek wzorcowych zbiorów danych, które mogłyby posłużyć jako zbiory uczące. Zbiór mechanik, metod i algorytmów ogranicza się jedynie do tych, które dobrze radzą sobie z danymi nieetykietowanymi. \\
 Wybrane algorytmy zatem powinny mieć możliwość klasyfikacji zbioru danych (podziału wg. określonych cech) a następnie na podstawie określonego warunku i parametrów określały punkty odstające.
 
 \section{Metoda okna czasowego}
-Metoda okna czasowego jest to sposób podziału całego zbioru danych na szereg mniejszych zbiorów zawierających się w pojedynczym, z góry określonym wycinku czasowym (dziedzina funkcji).\\
+Metoda okna czasowego jest to sposób podziału całego zbioru danych na szereg mniejszych zbiorów zawierających się w pojedynczym, z góry określonym wycinku czasowym (dziedzina funkcji) \cite{windowing}.\\
 Podział określają dwa parametry:
 \begin{itemize}
 \item \textbf{szerokość okna} - ilość punktów dla podzbiorów wygenerowanych z podanego zbioru danych
@@ -123,7 +124,7 @@ Działanie metody wizualizuje poniższy rysunek:
 
 Szerokość okna przyjęto jako 5 a długość kroku jako 2. Można zauważyć, że okna różnią się obszarem zajmowanej dziedziny co wynika z niejednorodnego rozrzutu punktów.
 \\
-Dodatkowo widać, że istnieją części wspólne dla sąsiadujących podzbiorów. Zastosowanie okna czasowego w tej postaci, zapewni, że większość punktów może być analizowana w różnych środowiskach, przez co eliminuje się lokalne odchylenia, istniejące jedynie w jednym z podzbiorów.
+Dodatkowo widać, że istnieją części wspólne dla sąsiadujących podzbiorów. Zastosowanie okna czasowego w tej postaci, zapewni, że większość punktów może być analizowana w różnych środowiskach (w otoczeniu różnych punktów - stale zmieniających się), przez co eliminuje się lokalne odchylenia, istniejące jedynie w jednym z podzbiorów.
 \\
 W zależności od zastosowanego algorytmu na podzbiorach metoda ta powinna dzielić zbiór danych na co najmniej 10 podzbiorów lecz należy pamiętać, że ilość punktów w danym podzbiorze (szerokość okna) nie powinna być mniejsza niż 2-5 procent szerokości całego zbioru danych.
 \\
@@ -147,7 +148,7 @@ Podział serii danych ze stemplem czasowym na pojedyncze klastry wraz z centroid
 Informację o przynależności punktu do konkretnego klastra można wykorzystać do wyznaczenia punktów odstających lokalnie (w jednym klastrze). \\
 Sam stempel czasowy jest cechą słabą (jest ona różna dla każdego punktu), dlatego przy stosowaniu tej metody należy rozważyć przypisanie cech dodatkowych, dzięki którymi podział na klastry będzie bardziej dokładniejszy.
 \subsection{Wykorzystanie odległości od centroidu}
-Jednym ze sposobów określania punktu jako odstającego jest obliczenie odległości w układzie współrzędnych tego punktu od centroidu klastra, do którego ten punkt należy. Następnie można wyznaczyć punkty odstające na dwa sposoby:
+Jednym ze sposobów określania punktu jako odstającego jest obliczenie jego odległości w układzie współrzędnych od centroidu klastra, do którego ten punkt należy. Następnie można wyznaczyć punkty odstające na dwa sposoby:
 \begin{itemize}
 \item \textbf{odrzucić punkty powyżej zadanego progu} - z zadanym warunkiem odrzucenia, wszystkie punkty, które przekraczają próg warunku zostają sklasyfikowane jako odstające. Metoda wymaga dodatkowych obliczeń takich jak wartość środkowa wartości w każdym klastrze w celu określenia punktu odniesienia. Warunek może przyjąć różne formy, lecz zazwyczaj opiera się on na proporcji względem wartości w zbiorze (np. przekroczenie dwukrotnej wartości średniej lub stosunek wartości średniej do wartości liczonego punktu).
 \item \textbf{odrzucić punkty najbardziej odległe} - trochę prostsza metoda, zakłada, że każdy zbiór danych zawiera pewne ilości punktów odstających, dlatego klasyfikuje najbardziej oddalone punkty jako odstające (biorąc pod uwagę wszystkie punkty, ze wszystkich klastrów, posortowane wartościami odległości od swoich centroidów). Ilość wybranych punktów jest zadana z góry, zazwyczaj około 5-10. Można by zakładać, że takie podejście jest niepoprawne, dlatego rekomenduje się przeprowadzenie wielokrotnych przeliczeń tego samego zbioru danych a następnie uśrednienie wartości otrzymanych (np. przeprowadzenie kilkukrotnych iteracji a następnie uwzględnienie punktów jako dostające jedynie wtedy, gdy wystąpiły one w 90 procentach przeprowadzonych iteracji)  \cite{kmean_dist}. 
@@ -381,7 +382,7 @@ Rezultaty oczywiście mogą zostać przeprocesowane metodami do usuwania i korek
 \section{Aplikacja internetowa}
 W celu analizy i przeprowadzania pojedynczych testów w łatwy i szybki sposób została stworzona aplikacja internetowa z poziomu której można wybrać konkretne zbiory danych oraz uruchomić algorytmy z zadeklarowanymi metodami wyszukiwania obserwacji odstających. Aplikacja dodatkowo umożliwia analizę oraz wizualizację zbiorów danych wraz z narzuconymi na wykres punktami sklasyfikowanymi jako odstające.
 \subsection{Struktura aplikacji}
-Aplikacja została podzielona na trzy główne warstwy, które komunikują się ze sobą oraz wymieniają dane za pomocą zapytań HTTP. Schemat komunikacji w prostu sposób ilustruje poniższy rysunek:
+Aplikacja została podzielona na trzy główne warstwy, które komunikują się ze sobą oraz wymieniają dane za pomocą zapytań HTTP oraz SQL Query. Schemat komunikacji w prostu sposób ilustruje poniższy rysunek:
 
 \begin{figure}[H]
   \begin{center}
@@ -391,7 +392,7 @@ Aplikacja została podzielona na trzy główne warstwy, które komunikują się 
 \end{figure}
 
 \subsubsection{Warstwa frontendowa}
-Warstwa odpowiedzialna za dostarczenie użytkownikowi informacji (danych) w graficzny sposób w przeglądarce internetowej. Dostarcza interfejs graficzny, który implementuje interaktywne elementy za pomocą, których generowane są zapytania do warstwy backendowej. Ze względu na jedynie pomocniczą rolę aplikacji internetowej w całym projekcie warstwa ta jest ograniczona do niezbędnego minimum.
+Warstwa odpowiedzialna za dostarczenie użytkownikowi informacji (danych) w graficzny sposób w przeglądarce internetowej. Dostarcza interfejs graficzny, który implementuje interaktywne elementy, za pomocą których generowane są zapytania do warstwy backendowej. Ze względu na jedynie pomocniczą rolę aplikacji internetowej w całym projekcie warstwa ta jest ograniczona do niezbędnego minimum.
 \\\\
 W projekcie warstwa frontendowa odpowiada za dostarczenie możliwości wyboru  kluczy identyfikujących zbiór danych a następnie po otrzymaniu danych w odpowiedzi zwrotnej wysłanego zapytania do warstwy backendowej wyświetla zbiór punktów w formie kartezjańskiego układu współrzędnych.
 \subsubsection{Warstwa backendowa}
@@ -401,15 +402,15 @@ Dodatkowym zadaniem warstwy bazodanowej jest uzupełnianie tabel w bazie danych 
 \subsubsection{Warstwa systemu bazy danych}
 Struktura fizyczna również umieszczona na serwerze dostarczająca informacje o zaimplementowanych strukturach danych oraz wartości przechowywanych w niej. Baza danych stanowi integralną cześć projektu.
 \subsection{Języki programistyczne}
-Podstawowym językiem wykorzystanym w warstwie frontendowej jest język Javascript \cite{js} w standardzie EcmaScript 6 \cite{es6} oraz składni TypeScript\cite{ts}, która zapewnia większą kontrolę nad strukturą kodu dostarczając niedostępne w podstawowej wersji Javascript typów zmiennych. W celu dostarczenia użytkownikowi przejrzystego interfejsu graficznego wykorzystany został język znaczników HTML 5(Hyper Text Markup Language)\cite{html} oraz CSS 3 (Cascading Style Sheets) \cite{css}.
+Podstawowym językiem wykorzystanym w warstwie frontendowej jest język Javascript \cite{js} w standardzie EcmaScript 6 \cite{es6} oraz składni TypeScript\cite{ts}, która zapewnia większą kontrolę nad strukturą kodu dostarczając niedostępne w podstawowej wersji Javascript typy zmiennych. W celu dostarczenia użytkownikowi przejrzystego interfejsu graficznego wykorzystany został język znaczników HTML 5(Hyper Text Markup Language)\cite{html} oraz CSS 3 (Cascading Style Sheets) \cite{css}.
 \\\\
 Warstwa backendowa jest napisana w języku python \cite{python}. Wybór tej technologi podyktowany jest głównie chęcią zbudowania jednolitego środowiska dla aplikacji oraz zaimplementowanych algorytmów uczenia maszynowego. Dzięki temu komunikacja i rozbudowa programu / aplikacji jest dużo prostsza.
 \\\\
-Jako system bazodanowy została wybrana Cassandra DB \cite{cassandra} ze względu na jest przystosowanie do obsługi  dużej ilości danych oraz prostej implementacji w języku python. Cassandra zapewnia szybki dostęp do dużej ilości danych jednocześnie.
+Jako system bazodanowy została wybrana Cassandra DB \cite{cassandra} ze względu na jej przystosowanie do obsługi złożonej struktury danych oraz prostej implementacji w języku python. Cassandra zapewnia szybki dostęp do dużej ilości danych jednocześnie.
 \subsection{Wykorzystane rozwiązania}
 \subsubsection{React.js}
 \small \textbf{Wersja:} 16.8.3\\
-React.js \cite{react} jest to jedno z najpopularniejszych rozwiązań przy tworzenie warstw frontendowych aplikacji. Wykorzystuje koncepcję komponentów i modularności. Jest napisany w języku JavaScript.
+React.js \cite{react} jest to jedno z najpopularniejszych rozwiązań do tworzenia warstwy frontendowej aplikacji. Wykorzystuje koncepcję komponentów i modularności. Jest napisany w języku JavaScript.
 \subsubsection{React vis}
 \small \textbf{Wersja:} 1.11.6\\
 Biblioteka generująca zestawy wykresów na podstawie podanego zbioru danych. Dzięki niej możliwe jest zwizualizowanie konkretnych zbiorów danych oraz ingerencja w ich zachowanie (zmiana skali, zmiana kolorów punktów bazując na dostarczonych parametrach).
@@ -423,17 +424,17 @@ Biblioteka dostarcza szereg funkcji używanych do zarządzania obiektami w języ
 \small \textbf{Wersja:} 0.23.1\\
 Preprocessor SASS jest językiem nadrzędnym nad CSS i jest do niego kompilowany. Dostarcza dodatkowe możliwości zarządzania atrybutami i zmiennymi w środowisku CSS co upraszcza i usprawnia proces tworzenia aplikacji.
 \subsubsection{Falcon}
-\small \textbf{Wersja:} 0.18.0\\
-Paczka służąca do stworzenia serwera HTTP w środowisku python. Obsługuje podstawowe zadania tworzenia tzw. endpointów, czyli wcześniej zdefiniowanych ścieżek w postaci adresu HTTP, w których zaimplementowane jest obsługa takich zdarzeń jak GET, POST, PUT. Mechanizm ten jest wykorzystywany do komunikacji z warstwą frontendową.
+\small \textbf{Wersja:} 2.0.0\\
+Paczka służąca do stworzenia serwera HTTP w środowisku python. Obsługuje podstawowe zadania tworzenia tzw. endpointów, czyli wcześniej zdefiniowanych ścieżek w postaci adresu HTTP, w których zaimplementowana jest obsługa takich zdarzeń jak GET, POST, PUT. Mechanizm ten jest wykorzystywany do komunikacji z warstwą frontendową.
 \subsubsection{Click}
-\small \textbf{Wersja:} 0.18.0\\
+\small \textbf{Wersja:} 7.0.0\\
 Paczka pozwalająca na proste tworzenie CLI (Command Line Interface), czyli konsolowego interfejsu, z poziomu którego za pomocą zdefiniowanych komend uruchamia się pojedyncze zadania.
 \subsubsection{Figgypy}
-\small \textbf{Wersja:} 0.18.0\\
-Paczka wykorzystywana do zarządzania globalną konfiguracją serwera. Dostarcza zestaw parserów, która wcześniej zdefiniowane wartości zapisane w pliku tekstowym jest w stanie zinterpretować i dostarczyć odpowiednie wartości do wykonywalnego kodu. Plik konfiguracyjny zawiera m.in parametry połączenia z bazą danych (nazwa użytkownika, hasło itp).
+\small \textbf{Wersja:} 1.1.7\\
+Paczka wykorzystywana do zarządzania globalną konfiguracją serwera. Dostarcza zestaw parserów, któr wcześniej zdefiniowane wartości zapisane w pliku tekstowym są w stanie zinterpretować i dostarczyć odpowiednie wartości do wykonywalnego kodu. Plik konfiguracyjny zawiera m.in. parametry połączenia z bazą danych (nazwa użytkownika, hasło itp).
 \subsubsection{Cassandra driver}
-\small \textbf{Wersja:} 0.18.0\\
-Paczka obługujące połączenie bazodanowe z systemem bazy danych Cassandra DB. Odpowiada za nawiązywanie i zrywanie połączeń oraz tworzenie tzw. query, na podstawie których otrzymywane są żądane dane z bazy danych.
+\small \textbf{Wersja:} 3.17.1\\
+Paczka obługująca połączenie bazodanowe z systemem bazy danych Cassandra DB. Odpowiada za nawiązywanie i zrywanie połączeń oraz tworzenie tzw. query, na podstawie których otrzymywane są żądane dane z bazy danych.
 \subsection{Wykorzystane narzędzia}
 Do poprawnego uruchomienia, tworzenia i działania aplikacji potrzebny jest szereg narzędzi programistycznych.
 \subsubsection{NPM (Node Package Manager), Yarn}
@@ -441,9 +442,9 @@ Node Package Manager (NPM) oraz Yarn są to podobne narzędzia. Służą one do 
 \subsubsection{Pipenv}
 Odpowiednik NPM / Yarn dla warstwy backendowej. Pipenv jest nadrzędnym narzędziem biblioteki pip oraz virtenv. Poza zarządzniem zależnościami i paczkami pipenv również tworzy wirtualne środowisko programistyczne dla języka python.
 \subsubsection{TS Lint, SASS Lint, Prettier}
-Zestaw narzędzi, który pozwala na utrzymanie kodu aplikacji w uporządkowany sposób za pomocą ustalonych wcześniej reguł. Dodatkowo implementują one narzędzia automatyzujące proces formatowanie kodu.
+Zestaw narzędzi, który pozwala na utrzymanie kodu aplikacji w uporządkowany sposób za pomocą ustalonych wcześniej reguł. Dodatkowo implementują one narzędzia automatyzujące proces formatowania kodu.
 \subsubsection{Webpack}
-Narzędzie zarządzające transformacją kodu warstwy frontendowej. Transformuje język wyższego rzędu (es6 oraz Typescript) na język Javascript zrozumiały dla współczesnych przeglądarek. Dodatkowo optymalizuje rozmiar plików skryptowych a także dostarcza narzędzia programistyczne takie jak testowy serwer czy walidacja kod uw czasie rzeczywistym.
+Narzędzie zarządzające transformacją kodu warstwy frontendowej. Transformuje język wyższego rzędu (es6 oraz Typescript) na język Javascript zrozumiały dla współczesnych przeglądarek. Dodatkowo optymalizuje rozmiar plików skryptowych a także dostarcza narzędzia programistyczne takie jak testowy serwer czy walidacja kodu w czasie rzeczywistym.
 \subsubsection{GIT, Github}
 GIT jest to system kontroli wersji dostępny z poziomu konsoli. Tworzy lokalne repozytorium zawierające kod aplikacji. Zapewnia bezpieczeństwo kodu i szybki dostęp do zapisanych zmian.
 \\\\
@@ -468,7 +469,7 @@ Użytkownik ma do wyboru trzy selektory:
 
 Wszystkie selektory poza selektorem operatora są zablokowane. Selektory odblokowują się po wyborze wartości w selektorze poprzednim zgodnie z powyższą hierarchią. Zapewniany jest tym sposobem dostęp do danych, które są reprezentowane przez wybrane klucze. Po wyborze wartości w ostatnim selektorze (KPI Name) wysyłane jest żądanie do warstwy backendowej. 
 \\\\
-\textbf{Warstwa backendowa}
+\textbf{Warstwa backendowa} \\
 Po odebraniu żądania z zawartymi informacjami o kluczach w formacie JSON wysyłane jest zapytanie do bazy danych a następnie zwracane wszystkie otrzymane wartości. Dane te są wyświetlane przez warstwę frontendową zgodnie z wymaganiem nr. 2.
 \\\\\noindent\rule{\textwidth}{2pt}
 \subsubsection{Wyświetlanie danych w formacie wykresu w układzie kartezjańskim}
@@ -490,7 +491,7 @@ Punkty zaznaczone są w postaci jednolitych kropek połączonych prostymi liniam
 \textbf{Nr wymagania:} 3
 \\\\
 \textbf{Przesłanka}\\
-Wybrane i uruchomienie metody wyszukiwania obserwacji odstających stanowi podstawę projektu i jest niezbędne do analizy i realizacji celu pracy.
+Wybranie i uruchomienie metody wyszukiwania obserwacji odstających stanowi podstawę projektu i jest niezbędne do analizy i realizacji celu pracy.
 \\\\
 \textbf{Opis}\\
 \textbf{Warstwa frontendowa}\\
@@ -519,12 +520,12 @@ Duża biblioteka zawierająca zaawansowane metody do zarządzania matematycznymi
 \subsubsection{scikit-learn} 
 Bilbioteka dostarczająca algorytmy uczenia maszynowego wykorzystywane w pracy.  \cite{scikit-learn}
 \subsection{Przygotowanie zbioru uczącego}
-Posiadane dane oprócz kluczy zawierają zaledwie dwie cechy - czas i wartość. Obie z tych cech są cechami słabymi ze względu na ich zbyt duży rozrzut i dużą unikalność - stempel czasowy jest inny dla każdego punktu a rozrzut wartości często jest bardzo duży (dodatkowo wartości bardzo często są równie unikatowe co czas). \\
-Aby proces uczenia maszynowgo przez wybrane algorytmy był trochę bardziej efektywny został zaimplementowany algorytm, który dopasuje i doda dodatkową cechę bazującą na stemplu czasowym. Zostały zaimplementowane trzy takie cechy - do wyboru w zależności od zbioru danych:
+Posiadane dane oprócz kluczy zawierają zaledwie dwie cechy - czas i wartość. Obie z tych cech są cechami słabymi ze względu na ich zbyt duży rozrzut i dużą unikalność - stempel czasowy jest inny dla każdego punktu a różnie w wartościach są spore (dodatkowo wartości bardzo często są równie unikatowe co czas). \\
+Aby proces uczenia maszynowego przez wybrane algorytmy był trochę bardziej efektywny został zaimplementowany algorytm, który dopasuje i doda dodatkową cechę bazującą na stemplu czasowym. Zostały zaimplementowane trzy takie cechy - do wyboru w zależności od zbioru danych:
 \begin{itemize}
-	\item dzien miesiaca (np. 28 dzien miesiaca to cecha 28)
-	\item dzien tygodnia (np. wtorek to cecha 2)
-	\item kombinacja dnia miesiące i samego miesiąca (np. 09.05 to cecha 0905)
+	\item dzień miesiąca (np. 28 dzień miesiąca to cecha 28)
+	\item dzień tygodnia (np. wtorek to cecha 2)
+	\item kombinacja dnia miesiąca i samego miesiąca (np. 09.05 to cecha 905)
 \end{itemize}
 Powoduje to, że w zależności od wybranej cechy można zwiększyć podobieństwo punktów do siebie. 
 \\\\
@@ -567,7 +568,7 @@ Końcowa strutkura pojedynczego punktu wygląda zatem następująco:
 \endgroup
 
 \subsection{Algorytm uruchamiania metody w pętli}
-Ze względu na pewną losowość wykorzystanych algorytmów uczenia maszynowego jednokrotne uruchomienie algorytmów na zbiorze danych może nie być jednoznacznie rozstrzygające (nigdy nie będzie, jednak można zwiększyć jego wiarygodność) został zaimplementowany algorytm uruchamiający jedną metodę wyszukiwania obserwacji odstających kilkukrotnie (w pętli). Ilość iteracji jest zadana z góry, niezmienność wyników została zaobserwowana w granicach 10 -15 razy. 
+Ze względu na pewną losowość wykorzystanych algorytmów uczenia maszynowego jednokrotne uruchomienie algorytmów na zbiorze danych może nie być jednoznacznie rozstrzygające (nigdy nie będzie, jednak można zwiększyć jego wiarygodność) został zaimplementowany algorytm uruchamiający jedną metodę wyszukiwania obserwacji odstających kilkukrotnie (w pętli). Ilość iteracji jest zadana z góry, niezmienność wyników została zaobserwowana już w granicach 10 - 15 razy. 
 \\\\
 Działanie pojedynczej iteracji można przedstawić w poniższy sposób:
 
@@ -600,7 +601,7 @@ Algorytm można zaimplementować w następujący sposób:
         final_result = []
         for data_point in labeled_result:
             try:
-                is_outlier = outliers_prob[data_point['id']] / iterations > 0.8
+                is_outlier = outliers_prob[data_point['id']] / iterations >= 0.8
             except KeyError:
                 is_outlier = False
 
@@ -721,7 +722,7 @@ def sim_kmean(n_clusters, dataset, similarity):
 \end{lstlisting}
 
 \subsection{Metoda regresji liniowej z wykorzystaniem podziału na okna czasowe}
-Metoda polegająca na obliczanie obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.2). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.3), próg 80 procent lub więcej. \\\\
+Metoda polegająca na klasyfikacji obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.3). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.3), próg 80 procent lub więcej. \\\\
 Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (3.3.3) łączenie tych dwóch podejść jest już zbędne.
 \\\\
 Działanie algorytmu można pokazać w następujący sposób:
@@ -733,12 +734,12 @@ Działanie algorytmu można pokazać w następujący sposób:
 \end{figure}
 \chapter{Przeprowadzanie badań}
 \section{Przygotowanie środowiska}
-Pierwszym krokiem przeprowadzenia badań i testów jest przygotowanie śrdowiska wraz z implementacją. Należy wybrać metody wyszukiwania obserwacji odstających a następnie określić ich parametry jako zmienne lub stałe.
+Pierwszym krokiem przeprowadzenia badań i testów jest przygotowanie środowiska wraz z implementacją. Należy wybrać metody wyszukiwania obserwacji odstających a następnie określić ich parametry jako zmienne lub stałe.
 \\\\
-Przed przystąpieniem do testów zostały wybrane tylko te zbiory danych, które zawierają więcej niż 800 pojedynczych punktów (dane z conajmniej dwóch lat). Dzięki temu wszystkie wybrane algorytmy powinny działać na takich samych zasadach (odpowiednia ilość punktów w klastrach a trend, jeśli istnieje, został już wyznaczony, możliwość dobrego podziału na okna czasowe).
+Przed przystąpieniem do testów zostały wybrane tylko te zbiory danych, które zawierają więcej niż 800 pojedynczych punktów (dane z co najmniej dwóch lat). Dzięki temu wszystkie wybrane algorytmy powinny działać na takich samych zasadach (odpowiednia ilość punktów w klastrach, trend, jeśli istnieje, został już wyznaczony, istnieje możliwość dobrego podziału na okna czasowe).
 \subsection{Wybór parametrów testowych}
 Parametry testowe są to wszystkie parametry jakich wymaga metoda do poprawnego działania. Ze względu na dużą ilość danych parametry zmienne powinny przyjmować maksymalnie 3 różne wartości z różnego zakresu.\\
-Z racji tego, że wielkości zbiorów danych są wybrane tak, aby ilość punktów zawierających się w nich była większa niż 700 można z góry narzucić pewne wartości parametrów bez zbędnego wyliczania ich indywidualnie dla każdego zbioru danych.
+Z racji tego, że wielkości zbiorów danych są wybrane tak, aby ilość punktów zawierających się w nich była większa niż 800 można z góry narzucić pewne wartości parametrów bez zbędnego wyliczania ich indywidualnie dla każdego zbioru danych.
 \\\\
 Przyjęto kolejne parametry:\\
 \textbf{Metoda odległości od centroidu (3.3.5)}
@@ -769,7 +770,7 @@ Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 12
 Docelowo wszystkie zbiory danych zostaną poddane badaniom, jednak wnioski zostaną oparte tylko na kilku wybranych. O wyborze zbioru będzie decydowała głównie jego charakterystyka oraz odmienność od innych. W końcowym podsumowaniu powinny się znaleźć zbiory bez oraz z mocno wyznaczonym trendem czy z wartościami mocno wahającymi się oraz z częstymi wygaśnięciami.\\
 Specyfika oraz powód wyboru każdego wybranego zbioru zostanie opisana wraz z przedstawieniem jego wyników.
 \section{Stworzenie programu automatyzującego}
-Ważną częścią etapu uruchamiania testów i badań jest stworzenie programu, który w sposób automatyczny będzie w stanie uruchomić wcześniej zdefiniowane metody kolejno z różnymi parametrami. WYnika to z tego, że cały proces uruchamiania metod jest czasochłonny. Uruchamianie kolejno metod ręcznie jest możliwe, jednak nieoptymalne (brane jest pod uwagę ręczne uruchomienie pojedynczych testów tylko w momencie chęci potwierdzenia wyniku). 
+Ważną częścią etapu uruchamiania testów i badań jest stworzenie programu, który w sposób automatyczny będzie w stanie uruchomić wcześniej zdefiniowane metody kolejno z różnymi parametrami. Wynika to z tego, że cały proces uruchamiania metod jest czasochłonny. Uruchamianie kolejno metod ręcznie jest możliwe, jednak nieoptymalne (brane jest pod uwagę ręczne uruchomienie pojedynczych testów tylko w momencie chęci potwierdzenia wyniku). 
 
 \subsection{System zapisywania do bazy danych}
 Program automatyzujący ma za zadanie uruchomić badanie / test a następnie zdefiniowane parametry końcowe zapisać w bazie danych. Końcowe parametry każdego pojedynczego testu to:
