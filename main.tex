@@ -1,7 +1,6 @@
 \documentclass[eng,printmode]{mgr}
 \usepackage{polski}
 \usepackage{url}
-\usepackage{listings}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{scrextend}
@@ -19,7 +18,34 @@
 \usepackage{graphicx}
 \graphicspath{ {./img/} }
 \usepackage{showlabels}
+\usepackage{lmodern}
 \usepackage{tabu}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\scriptsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
 \newcommand{\R}{I\!\!R}
 \newtheorem{theorem}{Twierdzenie}[section]
 
@@ -133,11 +159,12 @@ Metoda defniuje dodatkowy parametr opisujący procentową liczbę punktów zawar
 Tak sklasyfikowany zbiór przedstawia poniższy rysunek:
 \begin{figure}[H]
   \begin{center}
-  \includegraphics[scale=0.7]{linear_reg}
+  \includegraphics[scale=0.7]{KMean_sim}
   \end{center}
-  \caption{Wyznaczenie prostej regresji dla zbioru danych}
+  \caption{Podział na klastry z różną ilością punktów wewnątrz}
 \end{figure}
-
+Jak można zauważyć klastry zaznaczone na czerwono zawierają małą ilość punktów (mniejszą niż pozostałe klastry). Metoda oznaczy wszystkie punkty w tych klastrach jako odstające.
+\\\\
 Geneza metody wynika z pewnej wiedzy o prawdopodobnych wystąpieniach punktów odstających w otrzymanych zbiorach danych i jest w pełni autorska (nie uwzględniając algorytmu KMean).
 
 \section{Algorytm regresji liniowej}
@@ -157,9 +184,6 @@ Wyznaczoną linię regresji przedstawia poniższy rysunek:
   \end{center}
   \caption{Wyznaczenie prostej regresji dla zbioru danych}
 \end{figure}
-
-\section{Algorytm Isolation Forest}
-
 
 \chapter{Projekt inzynierski}
 
@@ -199,11 +223,11 @@ Zbiór wszystkich punktów wartości, które zostały zmierzone. Jest to podstaw
 \textbf{value} - wartość liczbowa dla tego punktu w danym czasie (tak samo jak dla daty, może to być wartość dla konkretnego punktu w czasie lub uśredniona wartość zebranych wartości z konkretnego okresu czasu).
 \\ \\
 Przykładową strukturę oraz źródła pochodzenia reprezentuje poniższy rysunek.
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[scale=0.6]{struct}
 \caption{Przykładowa struktura podziału sieci}
 \end{figure}
-\\
+
 Powyższa struktura w bazie danych wyglądałaby następująco:
 \\\\
 \begingroup
@@ -371,13 +395,13 @@ Warstwa odpowiedzialna za dostarczenie użytkownikowi informacji (danych) w graf
 \\\\
 W projekcie warstwa frontendowa odpowiada za dostarczenie możliwości wyboru  kluczy identyfikujących zbiór danych a następnie po otrzymaniu danych w odpowiedzi zwrotnej wysłanego zapytania do warstwy backendowej wyświetla zbiór punktów w formie kartezjańskiego układu współrzędnych.
 \subsubsection{Warstwa backendowa}
-Warstwa niewidoczna dla użytkownika, obsługuje zdarzenia po stronie serwera nasłuchując i odbierając zapytania HTTP. Jest też bezpośrednio połączona z systemem bazodanowym. Zarządza danymi zapisanymi w notacji JSON (Javascript Object Notation). Zadaniem tej warstwy jest uruchamianie procesów, o które warstwa frontendowa wysyła zapytania takie jak dostarczanie zbiorów danych oraz uruchamianie algorytmów wyszukiwania obserwacji odstających.
+Warstwa niewidoczna dla użytkownika, obsługuje zdarzenia po stronie serwera nasłuchując i odbierając zapytania HTTP. Jest też bezpośrednio połączona z systemem bazodanowym. Zarządza danymi zapisanymi w notacji JSON (Javascript Object Notation) \cite{JSON}. Zadaniem tej warstwy jest uruchamianie procesów, o które warstwa frontendowa wysyła zapytania takie jak dostarczanie zbiorów danych oraz uruchamianie algorytmów wyszukiwania obserwacji odstających.
 \\\\
 Dodatkowym zadaniem warstwy bazodanowej jest uzupełnianie tabel w bazie danych na podstawie wcześniej zdefiniowanych słowników. Dzięki temu mając jedynie surowe dane dostarczone z zewnątrz cała struktura potrzebna do działania aplikacji może zostać odtworzona automatycznie.
 \subsubsection{Warstwa systemu bazy danych}
 Struktura fizyczna również umieszczona na serwerze dostarczająca informacje o zaimplementowanych strukturach danych oraz wartości przechowywanych w niej. Baza danych stanowi integralną cześć projektu.
 \subsection{Języki programistyczne}
-Podstawowym językiem wykorzystanym w warstwie frontendowej jest język Javascript \cite{javascript} w standardzie EcmaScript 6 \cite{es6} oraz składni TypeScript\cite{ts}, która zapewnia większą kontrolę nad strukturą kodu dostarczając niedostępne w podstawowej wersji Javascript typów zmiennych. W celu dostarczenia użytkownikowi przejrzystego interfejsu graficznego wykorzystany został język znaczników HTML 5(Hyper Text Markup Language)\cite{html5} oraz CSS 3 (Cascading Style Sheets) \cite{css3}.
+Podstawowym językiem wykorzystanym w warstwie frontendowej jest język Javascript \cite{js} w standardzie EcmaScript 6 \cite{es6} oraz składni TypeScript\cite{ts}, która zapewnia większą kontrolę nad strukturą kodu dostarczając niedostępne w podstawowej wersji Javascript typów zmiennych. W celu dostarczenia użytkownikowi przejrzystego interfejsu graficznego wykorzystany został język znaczników HTML 5(Hyper Text Markup Language)\cite{html} oraz CSS 3 (Cascading Style Sheets) \cite{css}.
 \\\\
 Warstwa backendowa jest napisana w języku python \cite{python}. Wybór tej technologi podyktowany jest głównie chęcią zbudowania jednolitego środowiska dla aplikacji oraz zaimplementowanych algorytmów uczenia maszynowego. Dzięki temu komunikacja i rozbudowa programu / aplikacji jest dużo prostsza.
 \\\\
@@ -424,6 +448,8 @@ Narzędzie zarządzające transformacją kodu warstwy frontendowej. Transformuje
 GIT jest to system kontroli wersji dostępny z poziomu konsoli. Tworzy lokalne repozytorium zawierające kod aplikacji. Zapewnia bezpieczeństwo kodu i szybki dostęp do zapisanych zmian.
 \\\\
 Github jest to aplikacja webowa, która dostarcza zdalne repozytorium (zintegrowany z lokalnym) co zapewnia dostęp do napisanego kodu niezależnie od miejsca. Zapewnia też podstawowy system kopii zapasowej.
+\subsubsection{Docker}
+Narzędzie pozwalające na prostą konfigurację oraz uruchamianie aplikacji (tu: bazy danych) na każdym środowisku.
 \subsection{Wymagania funkcjonalne}
 \subsubsection{Wybór kluczy zbioru danych}
 \textbf{Nr wymagania:} 1 
@@ -487,9 +513,11 @@ Po zwróceniu zmodyfikowanych danych przez warstwę backendową zgodnie z wymaga
   \item pozostałe punkty na szaro
 \end{itemize}
 \section{Implementacja metod i algorytmów}
-\section{Wykorzystane technologie}
-\subsubsection{numpy}
-\subsubsection{sckit-learn}
+\subsection{Wykorzystane technologie}
+\subsubsection{numpy} 
+Duża biblioteka zawierająca zaawansowane metody do zarządzania matematycznymi strukturami danych takich jak macierze, wektory. Bilbioteka pozwala na prosty sposób zarządzania transformacjami danych pod kątem użycia ich w algorytmach dostarczonych przez scikit-learn. \cite{numpy}
+\subsubsection{scikit-learn} 
+Bilbioteka dostarczająca algorytmy uczenia maszynowego wykorzystywane w pracy.  \cite{scikit-learn}
 \subsection{Przygotowanie zbioru uczącego}
 Posiadane dane oprócz kluczy zawierają zaledwie dwie cechy - czas i wartość. Obie z tych cech są cechami słabymi ze względu na ich zbyt duży rozrzut i dużą unikalność - stempel czasowy jest inny dla każdego punktu a rozrzut wartości często jest bardzo duży (dodatkowo wartości bardzo często są równie unikatowe co czas). \\
 Aby proces uczenia maszynowgo przez wybrane algorytmy był trochę bardziej efektywny został zaimplementowany algorytm, który dopasuje i doda dodatkową cechę bazującą na stemplu czasowym. Zostały zaimplementowane trzy takie cechy - do wyboru w zależności od zbioru danych:
@@ -503,7 +531,25 @@ Powoduje to, że w zależności od wybranej cechy można zwiększyć podobieńst
 Wybranie tych cech idzie łącznie z założeniem, że zbiór danych posiada jakikolwiek trend. Przykładowy kod ustalający dodatkową cechę może być zaimplementowany w poniższy sposób:
 \\
 \begin{lstlisting}
-TODO
+ def get_dataset_with_day_feature(self, feature):
+        dataset_with_day = self.dataset
+        for index, data in enumerate(dataset_with_day):
+            daytime_timestamp = datetime.fromtimestamp(data['timestamp'])
+            if feature == 'day':
+                day = daytime_timestamp.day
+
+            if feature == 'monthday':
+                day = "{}{}".format(daytime_timestamp.day, daytime_timestamp.month)
+
+            if feature == 'weekday':
+                day = daytime_timestamp.weekday()
+
+            if feature == 'timestamp':
+                day = data['timestamp']
+
+            dataset_with_day[index]['day'] = int(day)
+
+        return dataset_with_day
 \end{lstlisting}
 
 Końcowa strutkura pojedynczego punktu wygląda zatem następująco:
@@ -523,13 +569,7 @@ Końcowa strutkura pojedynczego punktu wygląda zatem następująco:
 \subsection{Algorytm uruchamiania metody w pętli}
 Ze względu na pewną losowość wykorzystanych algorytmów uczenia maszynowego jednokrotne uruchomienie algorytmów na zbiorze danych może nie być jednoznacznie rozstrzygające (nigdy nie będzie, jednak można zwiększyć jego wiarygodność) został zaimplementowany algorytm uruchamiający jedną metodę wyszukiwania obserwacji odstających kilkukrotnie (w pętli). Ilość iteracji jest zadana z góry, niezmienność wyników została zaobserwowana w granicach 10 -15 razy. 
 \\\\
-Działanie pojedynczej iteracji algorytmu można zaimplementować w następujący sposób:
-
-\begin{lstlisting}
-TODO
-\end{lstlisting}
-
-Końcowa struktura pojedynczego punktu wygląda zatem następująco:
+Działanie pojedynczej iteracji można przedstawić w poniższy sposób:
 
 \begin{itemize}
   \item uruchom przekazaną metodę wyszukiwania anomalii
@@ -539,92 +579,197 @@ Końcowa struktura pojedynczego punktu wygląda zatem następująco:
   \item zwróć wynik
 \end{itemize}
 
-Działanie algorytmu przedstawić można jako schemat blokowy:
+Algorytm można zaimplementować w następujący sposób:
+
+\begin{lstlisting}
+    def run_calculations(method):
+        iterations = 10
+        labeled_result = []
+        outliers_prob = {}
+
+        for iteration in range(0, iterations):
+            labeled_result = method()
+
+            point_with_outliers = list(filter(lambda p: p['is_outlier'], labeled_result))
+            for point in point_with_outliers:
+                try:
+                    outliers_prob[point['id']] = outliers_prob[point['id']] + 1
+                except KeyError:
+                    outliers_prob[point['id']] = 1
+
+        final_result = []
+        for data_point in labeled_result:
+            try:
+                is_outlier = outliers_prob[data_point['id']] / iterations > 0.8
+            except KeyError:
+                is_outlier = False
+
+            final_result.append({
+                'id': data_point['id'],
+                'value': data_point['value'],
+                'timestamp': data_point['timestamp'],
+                'day': data_point['day'],
+                'is_outlier': is_outlier,
+                'label': data_point['label']
+            })
+
+        return final_result
+\end{lstlisting}
+
+
 \subsection{Podział zbioru danych na okna czasowe}
 Zgodnie z opisem w punkcie 2.1 algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
 \begin{lstlisting}
-TODO
+import numpy as np
+
+
+def create_windows(data, window_len, slide_len):
+    chunks = []
+    for pos in range(0, len(data), slide_len):
+        chunk = np.copy(data[pos:pos + window_len])
+        chunks.append(chunk)
+
+    return chunks
 \end{lstlisting}
 \subsection{Metoda odległości od centroidów z wykorzystaniem algorytmu KMean}
-Metoda opisana w punkcie 2.2.1 została w zaimplementowana w całości, z uwzględnieniem dwóch warunków defniowania punktu jako odstający. Wybór jednej z nich odbywa się na żądanie użytkownika. W procesie testowania metod oba warunki są używane w celu porównania ich działania.\\
-Końcowe działanie metody można przedstawić na prsotym przykładzie:
-\begin{itemize}
-	\item badaniu został poddany zbiór zawierający 30 punktów. Liczba klastrów została ustalona na 2. Podział wygląda następująco:
-	\item zostały obliczone odległości od centroidów klastrów a następnie obliczone potrzebne miary:
-	\item w zależności od wyboru metody punkty sklasyfikowane jako odstające po pierwszej iteracji zostały zaznaczone na czerwono:
-\end{itemize}
-\subsection{Metoda ilości punktów w klastrze z wykorzystaniem algorytmu KMean}
-Metoda opisana w punkcie 2.2.2 została zaimplementowana zgodnie z opisem uwzględniając obliczenie paramaterów, które są wymagane do obiczenia warunku (progu):
-\begin{itemize}
-	\item stosunek wielkości zbioru danych do ilości klastrów
-	\item ilość punktów w każðym klastrze
-	\item średniej liczby punktów na klaster
-\end{itemize}
-Znając powyższe parametry oraz zadany z góry warunek (próg) można zdefniować równanie, na podstawie którego rozpatrywane są pojedyncze klastry:
-\\
+Metoda opisana w punkcie 2.2.1 została w zaimplementowana w całości, z uwzględnieniem dwóch warunków definiowania punktu jako odstający. Wybór jednej z nich odbywa się na żądanie użytkownika. W procesie testowania metod oba warunki są używane w celu porównania ich działania.\\
+Końcowe działanie metody można przedstawić na prostym przykładzie:
+\\\\
+Badaniu został poddany zbiór zawierający 30 punktów. Liczba klastrów została ustalona na 2. Podział wygląda następująco:
 \begin{figure}[H]
   \begin{center}
-  \includegraphics[scale=0.7]{linear_reg}
+    \includegraphics[scale=0.5]{kmean_dist}
+        \caption{Podział zbioru danych na dwa klastry}
   \end{center}
-  \caption{Wyznaczenie prostej regresji dla zbioru danych}
 \end{figure}
+Zostały obliczone odległości od centroidów klastrów a następnie obliczone potrzebne miary:
+\begin{itemize}
+  \item[--] odległość każdego punktu od swojego centroidu
+  \item[--] średnia odległość punktu od centroidu w klastrze
+  \item[--] najmniejsza odległość punktu od centroidu w klastrze
+\end{itemize}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.5]{kmean_dist_1}
+        \caption{Podzielony zbiór danych z wyznaczonymi centroidami}
+  \end{center}
+\end{figure}
+W zależności od wyboru metody punkty sklasyfikowane jako odstające po pierwszej iteracji zostały zaznaczone na czerwono.\\
 
-Implementacja w kodzie może wyglądać następująco:
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.5]{kmean_dist_2}
+    \caption{Punkty odstające wyznaczone przez odrzucenie punktów powyżej zadanego progu}
+\end{center}
+
+\begin{center}
+  \includegraphics[scale=0.5]{kmean_dist_3}
+  \caption{Punkty odstające wyznaczone przez odrzucenie 5 punktów najdalej oddalonych}
+  \end{center}
+\end{figure}
+Powyższy przykład nie ilustruje rzeczywistego działania algorytmu. Przyjęto pewne uproszczenia i zaokrąglenia przy wyznaczaniu miar i punktów odstających.
+
+\subsection{Metoda ilości punktów w klastrze z wykorzystaniem algorytmu KMean}
+Metoda opisana w punkcie 2.2.2 została zaimplementowana zgodnie z opisem uwzględniając obliczenie parametrów, które są wymagane do obiczenia warunku (progu):
+\begin{itemize}
+	\item stosunek wielkości zbioru danych do ilości klastrów
+	\item ilość punktów w każdym klastrze
+	\item średniej liczby punktów na klaster
+\end{itemize}
+Znając powyższe parametry oraz zadany z góry warunek (próg) można zdefiniować równanie, na podstawie którego rozpatrywane są pojedyncze klastry:
+\\
+\begin{equation*}
+LP = \lfloor W / 100\% \times SPK  \rfloor
+\end{equation*}
+gdzie,\\
+$LP$ - Maksymalna liczba punktów w klastrze \\
+$W[\%]$ - Zdefiniowany warunek \\
+$SPK$ - Średnia liczba punktów na klaster \\
+\\\\
+Znając liczbę $LP$ oraz ilość punktów w każdym klastrze można sklasyfikować te klastry których liczba punktów jest $\le LP$
+\\\\
+Implementacja całej metody w kodzie może wyglądać następująco:
 
 \begin{lstlisting}
-TODO
+import numpy as np
+from sklearn.cluster import KMeans
+
+
+def sim_kmean(n_clusters, dataset, similarity):
+    filtered_dataset = np.array(list(map(lambda data: [data['value'], data['day']], dataset)))
+    model = KMeans(n_clusters)
+    clusterer = model.fit(filtered_dataset)
+    labels = model.predict(filtered_dataset)
+    centroids = clusterer.cluster_centers_
+
+    labeled_result = dataset
+    centroids_counter = {}
+
+    for index, label in enumerate(labels):
+        key = str(centroids[label][0])
+        try:
+            centroids_counter[key] = centroids_counter[key] + 1
+        except KeyError:
+            centroids_counter[key] = 1
+
+    for index, label in enumerate(labels):
+        key = str(centroids[label][0])
+        labeled_result[index]['is_outlier'] = centroids_counter[key] <= similarity
+        labeled_result[index]['label'] = int(label)
+
+    return labeled_result
 \end{lstlisting}
 
 \subsection{Metoda regresji liniowej z wykorzystaniem podziału na okna czasowe}
-Metoda polegająca na obliczanie obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.2). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.2), próg 80 procent lub więcej. \\\\
-Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (3.3.2) łączenie tych dwóch podejść jest już zbędne.
+Metoda polegająca na obliczanie obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.2). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.3), próg 80 procent lub więcej. \\\\
+Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (3.3.3) łączenie tych dwóch podejść jest już zbędne.
 \\\\
-Działanie algorytmu można zwizualizować w następujący sposób:
+Działanie algorytmu można pokazać w następujący sposób:
 \begin{figure}[H]
   \begin{center}
-  \includegraphics[scale=0.7]{linear_reg}
+  \includegraphics[scale=0.7]{reg_windowed}
   \end{center}
-  \caption{Wyznaczenie prostej regresji dla zbioru danych}
+  \caption{Wyznaczenie prostych regresji dla zbioru danych podzielonego na okna}
 \end{figure}
 \chapter{Przeprowadzanie badań}
-\section{Prygotowanie środowiska}
+\section{Przygotowanie środowiska}
 Pierwszym krokiem przeprowadzenia badań i testów jest przygotowanie śrdowiska wraz z implementacją. Należy wybrać metody wyszukiwania obserwacji odstających a następnie określić ich parametry jako zmienne lub stałe.
 \\\\
-Przed przystąpieniem do testów zostały wybrane tylko te zbiory danych, które zawierają więcej niż 800 pojedynczcyh punktów (dane z conajmniej dwóch lat). Dzięki temu wszystkie wybrane algorytmy powinny działać na takich samych zasadach (odpowiednia ilość punktów w klastrach a trend, jeśli istnieje, został już wyznaczony, możliwość dobrego podziału na okna czasowe).
+Przed przystąpieniem do testów zostały wybrane tylko te zbiory danych, które zawierają więcej niż 800 pojedynczych punktów (dane z conajmniej dwóch lat). Dzięki temu wszystkie wybrane algorytmy powinny działać na takich samych zasadach (odpowiednia ilość punktów w klastrach a trend, jeśli istnieje, został już wyznaczony, możliwość dobrego podziału na okna czasowe).
 \subsection{Wybór parametrów testowych}
 Parametry testowe są to wszystkie parametry jakich wymaga metoda do poprawnego działania. Ze względu na dużą ilość danych parametry zmienne powinny przyjmować maksymalnie 3 różne wartości z różnego zakresu.\\
 Z racji tego, że wielkości zbiorów danych są wybrane tak, aby ilość punktów zawierających się w nich była większa niż 700 można z góry narzucić pewne wartości parametrów bez zbędnego wyliczania ich indywidualnie dla każdego zbioru danych.
 \\\\
 Przyjęto kolejne parametry:\\
-\textbf{Metoda odległości od centroidu (3.3.4)}
+\textbf{Metoda odległości od centroidu (3.3.5)}
 \begin{itemize}
 	\item ilość klastrów: 20, 40
-	\item wszystkie trzy dodatkowe cechy (3.3.1)
+	\item wszystkie trzy dodatkowe cechy (3.3.2)
 	\item oba warunki klasyfikacji (1.5 i 3 jako parametry warunku)
 \end{itemize}
 Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 24
 \\\\
-\textbf{Metoda ilości punktów w klastrze (3.3.5)}
+\textbf{Metoda ilości punktów w klastrze (3.3.6)}
 \begin{itemize}
 	\item ilość klastrów: 20, 40
-	\item wszystkie trzy dodatkowe cechy (3.3.1)
+	\item wszystkie trzy dodatkowe cechy (3.3.2)
 	\item dwa parametry dla warunku metody: 30 i 50 procent
 \end{itemize}
 Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 12
 \\\\
-\textbf{Metoda regresji liniowej z oknem czasowym (3.3.6)}
+\textbf{Metoda regresji liniowej z oknem czasowym (3.3.7)}
 \begin{itemize}
-	\item wszystkie trzy dodatkowe cechy (3.3.1)
+	\item wszystkie trzy dodatkowe cechy (3.3.2)
 	\item dwa parametry dla warunku metody: 1.5 i 3
 	\item dwie różne wersje parametrów okna czasowego: krok 2, szerokość okna 22 oraz krok 5, szerokość okna 50
 \end{itemize}
 Ilość wykonanych uruchomień algorytmu na jednym zbiorze danych: 12
 \\\\
 \subsection{Wybór zbiorów danych}
-Docelowo wszystkie zbiory danych zostaną poddane badaniom, jednak wnioski zostaną oparte tylko na kilku wybranych. O wyborze zbioru będzie decydowała głównie jego charakterystyka oraz odmienność od innych. W końcowym podsumowaniu powinny się znależć zbiory bez oraz z mocno wyznaczonym trendem czy z wartościami mocno wahającymi się oraz z częstymi wygaśnięciami.\\
+Docelowo wszystkie zbiory danych zostaną poddane badaniom, jednak wnioski zostaną oparte tylko na kilku wybranych. O wyborze zbioru będzie decydowała głównie jego charakterystyka oraz odmienność od innych. W końcowym podsumowaniu powinny się znaleźć zbiory bez oraz z mocno wyznaczonym trendem czy z wartościami mocno wahającymi się oraz z częstymi wygaśnięciami.\\
 Specyfika oraz powód wyboru każdego wybranego zbioru zostanie opisana wraz z przedstawieniem jego wyników.
 \section{Stworzenie programu automatyzującego}
-Ważną częęcią etapu uruchamiania testów i badań jest stworzenie programu, który w sposo” automatyczny będzie w stanie uruchomić wcześniej zdefinowane metody kolejno z różnymi parametrami. WYnika to z tego, że cały proces uruchamiania metod jest czasochłonny. Uruchamianie kolejno metod ręcznie jest możliwe, jednak nieoptymalne (brane jest pod uwagę ręczne uruchomienie pojedynczych testów tylko w momencie chęci potwierdzenia wyniku). 
+Ważną częścią etapu uruchamiania testów i badań jest stworzenie programu, który w sposób automatyczny będzie w stanie uruchomić wcześniej zdefiniowane metody kolejno z różnymi parametrami. WYnika to z tego, że cały proces uruchamiania metod jest czasochłonny. Uruchamianie kolejno metod ręcznie jest możliwe, jednak nieoptymalne (brane jest pod uwagę ręczne uruchomienie pojedynczych testów tylko w momencie chęci potwierdzenia wyniku). 
 
 \subsection{System zapisywania do bazy danych}
 Program automatyzujący ma za zadanie uruchomić badanie / test a następnie zdefiniowane parametry końcowe zapisać w bazie danych. Końcowe parametry każdego pojedynczego testu to:
@@ -636,7 +781,7 @@ Program automatyzujący ma za zadanie uruchomić badanie / test a następnie zde
 \end{itemize}
 
 \subsection{System raportowania}
-Po przeprowadzeniu wzystkich zdefiniowanych testów zostanie uruchomiona procedura tworzenia raportów. Pojedynczy raport tyczy się jednego zbioru danych oraz metod jakie zostały na nim uruchomione. W skład tej procedury wchodzą:
+Po przeprowadzeniu wszystkich zdefiniowanych testów zostanie uruchomiona procedura tworzenia raportów. Pojedynczy raport tyczy się jednego zbioru danych oraz metod jakie zostały na nim uruchomione. W skład tej procedury wchodzą:
 \begin{itemize}
 	\item agregacja sklasyfikowanych punktów odstających (ilość, wystąpienia, powtórzenia)
 	\item agregacja czasów trwania pojedynczych testów (średni czas, najkrótszy, najdłuższy)
@@ -646,6 +791,7 @@ Pojedynczy raport jest zapisany jako tabela w formacie CSV.
 \section{Porównanie metod wyszukiwania obserwacji odstających}
 \section{Wnioski}
 \chapter{Podsumowanie i mowa końcowa}
+
 
 \bibliography{bibliografia}
 \end{document}
