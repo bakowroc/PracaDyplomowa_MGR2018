@@ -164,7 +164,17 @@ Jak można zauważyć klastry zaznaczone na czerwono zawierają małą ilość p
 Geneza metody wynika z pewnej wiedzy o prawdopodobnych wystąpieniach punktów odstających w otrzymanych zbiorach danych i jest w pełni autorska (nie uwzględniając algorytmu KMean).
 
 \section{Algorytm Isolation Forest}
+Algorytm klasyfikujący zbiór danych za pomocą prób separacji pojedynczych punktów od całej reszty. Punkty uznaje się za odstający gdy liczba separacji była mała (w stosunku do pozostałych punktów). Założeniem tego algorytmu jest to, że punkt odstający można odseparować skończenie małą liczbą losowych podziałów zbioru (ze względu na jego dużą odległość od "głównego" skupiska / nagromadzenia pozostałych punktów). Punkt niebędący anomalią daje się odseparować dużo większą ilością podziałów. Na podstawie maksymalnej oraz średniej ilości takich podziałów algorytm wyznacza optymalną ilość, która stanowi próg dla punktów odstających i na tej podstawie je klasyfikuje.
+\\\\
+Działanie algorytmu opisuje rysunek \ref{fig:isolation_forest}.
 
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{isolation_forest}
+  \end{center}
+  \caption{Podział zbioru danych oraz separacja punktów odstających}
+  \label{fig:isolation_forest}
+\end{figure}
 \section{Algorytm regresji liniowej}
 Algorytm regresji liniowej jest najprostszym z wybranych algorytmów. Na zadanym zbiorze danych wyznaczana jest prosta regresji za pomocą metody najmniejszych kwadratów, czyli funkcja liniowa reprezentująca oszacowane wartości bazując na zadanym zbiorze danych. 
 \\\\
@@ -485,6 +495,7 @@ Algorytm można zaimplementować w następujący sposób:
 
 \subsection{Podział zbioru danych na okna czasowe}
 Zgodnie z opisem w punkcie 2.1 algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
+\\
 \begin{lstlisting}
 import numpy as np
 
@@ -559,42 +570,73 @@ $SPK$ - Średnia liczba punktów na klaster \\
 Znając liczbę $LP$ oraz ilość punktów w każdym klastrze można sklasyfikować te klastry których liczba punktów jest $\le LP$
 \\\\
 Implementacja całej metody w kodzie może wyglądać następująco:
-
+\\
 \begin{lstlisting}
 import numpy as np
 from sklearn.cluster import KMeans
 
 
 def sim_kmean(n_clusters, dataset, similarity):
-    filtered_dataset = np.array(list(map(lambda data: [data['value'], data['day']], dataset)))
+    filtered_dataset = np.array(list(map(lambda data: [data['value'],       data['day'], data['timestamp']], dataset)))
     model = KMeans(n_clusters)
-    clusterer = model.fit(filtered_dataset)
+    model.fit(filtered_dataset)
     labels = model.predict(filtered_dataset)
-    centroids = clusterer.cluster_centers_
 
-    labeled_result = dataset
-    centroids_counter = {}
+    dataset_with_labels = create_points_with_labels(dataset, labels)
 
-    for index, label in enumerate(labels):
-        key = str(centroids[label][0])
-        try:
-            centroids_counter[key] = centroids_counter[key] + 1
-        except KeyError:
-            centroids_counter[key] = 1
+    clusters, clusters_dict = to_clusters(dataset, labels)
+    _mean, _max = calculate_clusters_info(clusters)
 
-    for index, label in enumerate(labels):
-        key = str(centroids[label][0])
-        labeled_result[index]['is_outlier'] = centroids_counter[key] <= similarity
-        labeled_result[index]['label'] = int(label)
+    labeled_result = dataset_with_labels
+    for index, data_point in enumerate(dataset_with_labels):
+        labeled_result[index]['is_outlier'] = calculate_outlier_prob(_mean, _max, clusters_dict, data_point['label'], similarity)
+
+    return labeled_result
+
+
+def calculate_outlier_prob(_mean, _max, dict_clusters, label, similarity) -> bool:
+    num_in_cluster = len(dict_clusters[label])
+    return num_in_cluster <= int(_mean / similarity)
+\end{lstlisting}
+
+
+\subsection{Algorytm Isolation Forest}
+Algorytm nie wymaga implementacji warunku czy progu, na podstawie którego klasyfikowany jest punkt jako odstający. Metoda ta zwraca kolekcję sklasyfikowanych już punktów na podstawie szerego przyjętych parametrów.
+\\\\
+Implementacja może wyglądać następująco:
+\\
+\begin{lstlisting}
+from sklearn.ensemble import IsolationForest
+import numpy as np
+
+from outlier_detector.learn_utils import create_points_with_labels
+
+
+def isl_forest(dataset):
+    rng = np.random.RandomState(42)
+    filtered_dataset = np.array(list(map(lambda data: [data['value'], data['day'], data['timestamp']], dataset)))
+    clf = IsolationForest(n_estimators=100, behaviour='new', max_samples=100,
+                          random_state=rng, contamination=0.01)
+
+    clf.fit(filtered_dataset)
+    prediction = clf.predict(filtered_dataset)
+
+    labeled_result = []
+    for data_point in create_points_with_labels(dataset, list(prediction)):
+        data_point['is_outlier'] = data_point['label'] == -1
+        labeled_result.append(data_point)
 
     return labeled_result
 \end{lstlisting}
+
+
+Ze względu na niepewność i duży rozrzut uzyskiwanych wyników algorytm ten nie jest częścią algorytmu fuzji.
 
 \subsection{Metoda regresji liniowej z wykorzystaniem podziału na okna czasowe}
 Metoda polegająca na klasyfikacji obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.3). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.3), próg 80 procent lub więcej. \\\\
 Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (3.3.3) łączenie tych dwóch podejść jest już zbędne.
 \\\\
-Działanie algorytmu przedstawia rysunek \ref{fig:reg_windowed}
+Działanie algorytmu przedstawia rysunek \ref{fig:reg_windowed}.
 \begin{figure}[H]
   \begin{center}
   \includegraphics[scale=0.7]{reg_windowed}
@@ -603,11 +645,35 @@ Działanie algorytmu przedstawia rysunek \ref{fig:reg_windowed}
   \label{fig:reg_windowed}
 \end{figure}
 
+\subsection{Algorytm fuzji}
+Algorytm polega na przebadaniu zbioru danych wszystkimi algorytmami a następnie oznaczanie ilości wystąpień sklasyfikowanych punktów odstających.Punkty finalnie uznaje się za odstające gdy wystąpiły one w X\% użytych algorytmów - domyślnie 50\% (punkt musi wystąpić jako odstający w co najmniej połowie użytych algorytmów).
+\\\\
+Implementacja może wyglądać następująco:
+\\
+\begin{lstlisting}
+def get_fusion_result(methods, precision):
+    outliers = []
 
-\subsection{Algorymt fuzji}
+    for index, method_result in enumerate(methods):
+        method_outliers = []
+        for data_point in method_result:
+            if data_point['is_outlier']:
+                method_outliers.append(data_point['id'])
 
-TODO
+        outliers.append(method_outliers)
 
+    occurrences = dict(count_duplicates(flatten(outliers)))
+    final_result = []
+    for data_point in methods[0]:
+        data_point_cp = data_point.copy()
+            if data_point_cp['id'] in occurrences:
+                is_outlier = occurrences[data_point_cp['id']] >= precision * len(methods)
+            data_point_cp['is_outlier'] = is_outlier
+
+        final_result.append(data_point_cp)
+
+    return final_result
+\end{lstlisting}
 \chapter{Aplikacja internetowa}
 W celu analizy i przeprowadzania pojedynczych testów w łatwy i szybki sposób została stworzona aplikacja internetowa z poziomu której można wybrać konkretne zbiory danych oraz uruchomić algorytmy z zadeklarowanymi metodami wyszukiwania obserwacji odstających. Aplikacja dodatkowo umożliwia analizę oraz wizualizację zbiorów danych wraz z narzuconymi na wykres punktami sklasyfikowanymi jako odstające.
 \subsection{Struktura aplikacji}
@@ -766,7 +832,6 @@ Dla każdego wybranego zbioru danych przeprowadzone zostały testy bazujące na 
 \\\\
 \begingroup
 \fontsize{10pt}{12pt}\selectfont
-
 \begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] | X[l] |}
 \hline
 \textbf{Parametr} & \textbf{Algorytm} & \textbf{Nazwa robocza} & \textbf{Wartość domyślna} & \textbf{Wartości w testach}\\
@@ -795,8 +860,121 @@ Na podstawie przeprowadzonych testów oraz uzyskanych testów zostały stworzone
 
 Uzyskanymi wartościami w każdym przypadku jest liczba sklasyfikowanych punktów jako odstające (próg akceptowalny < 1\% punktów w zbiorze danych).
 
+\section{Analiza uzyskanych wyników}
+\subsection{Porównanie wartości parametrów sterujących}
+\subsection{Porównanie algorytmów}
+W celu przeprowadzenia testów zostały wybrane różne zbiory danych (wybór subiektywny). Na potrzeby lepszej analizy zbiory danych zostały pogrupowane na trzy rodzaje, w zależności od rodzaju charakterystyki oraz możliwości występowania punktów odstających (również podział subiektywny):
+\\
+Podział ze względu na możliwość występowania punktów odstających:
+\begin{itemize}
+  \item A1 - widoczne są wyraźne anomalie
+  \item A2 - brak wyraźnych anomalii
+\end{itemize}
+Podział ze względu na charakterystykę zbioru danych:
+\begin{itemize}
+  \item B1 - zbiór danych zawiera trend
+  \item B2 - zbiór danych nie zawiera trendu
+  \item B3 - zbiór danych zawiera lokalne wyciszenia
+\end{itemize}
 
-\section{Uzyskane wyniki}
+Opis wybranych zbiorów danych:
+\\
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} & \textbf{Typ zbioru danych}\\
+\hline
+d1 & 899 & OYTAL & RNC\_165 & A1, B1 \\
+\hline
+d2 & 53 & NOGALES & MGW\_1123 & A1, B1 \\
+\hline
+d3 & 53 & NOGALES & MSC\_601 & A1, B2 \\
+\hline
+d4 & 53 & OCNITA & RNC\_615 & A1, B2\\
+\hline
+d5 & 534 & AGUA\_PRIETA & LTE\_1079 & A2, B3 \\
+\hline
+d6 & 998 & DARHAN & SGSN\_525 & A2, B1 \\
+\hline
+d7 & 998 & DARHAN & SGSN\_544 & A1, B2 \\
+\hline
+d8 & 160 & MOTUL & RNC\_5464 & A2, B3 \\
+\hline
+d9 & 283 & VILANI & RNC\_5081 & A2, B2 \\
+\hline
+d10 & 283 & ORIZBA & LTE\_5058 & A1, B1 \\
+\hline
+d11 & 1162 & SIBU & RNC\_165 & A2, B1 \\
+\hline
+d12 & 1162 & SIBU & RNC\_5082 & A1, B2\\
+\hline
+\end{tabu}
+\endgroup
+\\\\
+Dokładne charakterystyki powyżśzych zbiorów danych przedstawia dodatek A. Testy zostały przeprowadzone z wartościami domyślnymi.
+\subsubsection{Algorytm KMean - odległość od centroidu}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{r_dist_f}
+  \end{center}
+  \caption{Wyniki dla algorytmu KMean - odległość od centroidu (wariant stały)}
+  \label{fig:r_dist_f}
+\end{figure}
+
+Algorytm w tym wariancie w każdym zbiorze danych znalazł punkty odstające. Co więcej ich liczba oscyluje w granicach 5, co jest rezultatem sztywnego ustalenia co najmniej 5 punktów w pojedynczym rezultacie. Nawet pomimo użycia algorytmu uruchamiania metod w pętli, ze względu na mniejszą niż spodziewana losowość algorytmu KMean tylko w dwóch zbiorach danych została zauważona różnica.
+\\\\
+Metoda odległości od centroidu daje najlepsze, najbardziej trafne rezultaty, nawet pomimo stałej wartości zwracanych punktów (zawsze są to punkty, które przynajmniej warto rozważyć, gdyż rezultat nie jest oczywisty). Nie zostały zaobserwowane sklasyfikowania zupełnie błędne, które należałoby od razu odrzucić.
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{r_dist_c}
+  \end{center}
+  \caption{Wyniki dla algorytmu KMean - odległość od centroidu (wariant obliczeniowy)}
+  \label{fig:r_dist_c}
+\end{figure}
+
+Ta wersja algorytmu daje rezultaty o zwiększonym przedziale liczby sklasyfikowanych punktów jako odstające. Ze względu na obecność progu (warunku), na podstawie którego punkt jest klasyfikowany jako anomalia uzyskiwane rezultaty są bardziej powiązane z faktyczną charakterystyką zbioru danych oraz zmianami w nim zachodzącymi. Takie podejście jest jednocześnie dobre oraz złe, gdyż obliczony warunek w specyficznych przypadkach powoduje, że zbyt duża lub zbyt mała ilość punktów jest klasyfikowana (co przedstawia wykres \ref{fig:r_dist_c}). Wynika to np. z dużej ilości nagromadzenia punktów odstających obok siebie, lub stopniowe zwiększanie / zmniejszanie się kolejnych wartości w czasie w pojedynczym odcinku (wycinek charakterystyki, który nie pasuje do całokształtu, np. zbiór d5, d8).
+
+
+
+\subsubsection{Algorytm KMean - ilość punktów w klastrze}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{r_sim}
+  \end{center}
+  \caption{Wyniki dla algorytmu KMean - ilość punktów w klastrze}
+  \label{fig:r_sim}
+\end{figure}
+
+Algorytm wykorzystuje informację o ilości punktów w danym klastrze. Jedynymi zbiorami danych, w których algorytm wykrył możliwe punkty odstające są te, które zostały sklasyfikowane jako zawierające miejsca wyciszenia lub zawierają punkty odstające bardzo oddalone od punktów sąsiadujących (d2 - przyrost wartości punktu potencjalnie odstającego jest ponad 3 krotny).
+\\\\
+ Algorytm niemniej jednak ma bardzo wąskie zastosowanie - tylko dla zbiorów danych, w których klastry są tworzone przez pojedyncze punkty lub takie, które zawierają przerwy między jednym nagromadzeniem punktów a kolejnym. Na tle całości pracy algorytm ten ma raczej rolę pomocniczą lub rozstrzygającą (np. w sytuacji wykorzystania algorytmu fuzji).
+\subsubsection{Algorytm regresji liniowej}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{r_reg}
+  \end{center}
+  \caption{Wyniki dla algorytmu regresji liniowej}
+  \label{fig:r_reg}
+\end{figure}
+
+Uzyskano bardzo duże rozrzuty między ilością sklasyfikowanych punktów w kolejnych zbiorach danych. Wynika to głównie z braku trendu oraz dużego rozrzutu między wartością maksymalną, minimalną oraz środkową (np. zbiór danych d5, gdzie charakterystyka jest bardziej zbliżona do funkcji kwadratowej niż liniowej).
+\\\\
+Algorytm ten znajduje zastosowanie jednak w większości zbiorach danych (ilość sklasyfikowanych punktów jest w granicach normy) a punkty, który są klasyfikowane jako odstające zazwyczaj pokrywają się z subiektywnymi oczekiwaniami.
+\subsubsection{Algorytm fuzji}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{r_fusion}
+  \end{center}
+  \caption{Wyniki dla algorytmu fuzji}
+  \label{fig:r_fusion}
+\end{figure}
+
+Wyniki dla tego algorytmu pokazują, że niezależnie od zbioru danych, obserwacje odstające zostały znalezione, nawet w tych sklasyfikowanych jako nie zawierających wyraźnych punktów odstających. Algorytm fuzji w wielu przypadkach daje spodziewane rezultaty co do oczekiwanych punktów odstających. Użycie kombinacji wielu algorytmów, które mają zastosowanie tylko w specyficznych zbiorach danych powoduje, że uwzględniana jest zmienność zbioru danych w czasie (zmiana charakterystyki, zmiana trendu). Dodatkowo użycie tego mechanizmu podnosi pewność uzyskanych wyników.
+\\\\
+Algorytm może się nie sprawdzać w momentach gdy zbiór danych ma utrzymującą się charakterystykę specyficzną tylko dla jednego algorytmu.
 \section{Wnioski}
 
 
