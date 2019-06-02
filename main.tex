@@ -828,7 +828,7 @@ Po zakończeniu wszystkich zdefiniowanych testów zostanie uruchomiona procedura
 \end{itemize}
 Pojedynczy raport jest zapisany jako tabela w formacie CSV.
 \section{Zdefiniowanie testów oraz typów raportów}
-Dla każdego wybranego zbioru danych przeprowadzone zostały testy bazujące na zmianie pojedynczych parametrów sterujących dla zdefiniowanych algorytmów. Pozostałe parametry przyjęły wartości domyślne, wynikające ze wcześniejszych obliczeń:
+W procesie realizacji testów zostały wykorzystane zaimplementowane algorytmy wraz ze swoimi parametrami sterującymi. Wartości domyślne parametrów sterujących, wynikające ze wcześniejszych obliczeń i obserwacji:
 \\\\
 \begingroup
 \fontsize{10pt}{12pt}\selectfont
@@ -862,6 +862,63 @@ Uzyskanymi wartościami w każdym przypadku jest liczba sklasyfikowanych punktó
 
 \section{Analiza uzyskanych wyników}
 \subsection{Porównanie wartości parametrów sterujących}
+Dla każdego wybranego zbioru danych (wybrano 30 zbiorów danych) przeprowadzone zostały testy bazujące na zmianie pojedynczych parametrów sterujących dla zdefiniowanych algorytmów. Pozostałe parametry przyjęły wartości domyślne.
+\subsubsection{Parametr feature}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{avg_feature}
+  \end{center}
+  \caption{Wyniki dla zmiany parametru feature}
+  \label{fig:avg_feature}
+\end{figure}
+Pomimo wcześniejszych założeń co do zdefiniowania dodatkowej cechy oraz jej wpływu na uzyskiwane wyniku test ten pokazuje, że obecność tej cechy nie ma większego znaczenia jeśli chodzi o uzyskiwane wyniki (za wyjątkiem algorytmu KMean dla metody ilości punktów w klastrze, który wykazuje pewną wrażliwość na zmianę tego parametru).
+\subsubsection{Parametr precision}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{avg_precision}
+  \end{center}
+  \caption{Wyniki dla zmiany parametru precision}
+  \label{fig:avg_precision}
+\end{figure}
+Parametr ten definiuje ile algorytmów musi być ze sobą zgodnych (sklasyfikować ten sam punkt jako odstający). Ze względu na różnorodność metod oraz ich specyficznym zastosowaniom nigdy nie uzyskano stu procentowej zgodności. Zaskakujące jest jednak, że przy pewności 75\% średnio zawsze uzyskiwano co najmniej jeden punkt. Przy zastosowaniu lekkich poprawek i usprawnień w zaimplementowanych algorytmach zdecydowanie udałoby się tę wartość zwiększyć, co doprowadziłoby, że system dawałby wyniki w 75\% poprawne w większości przypadków.
+\subsubsection{Parametr clusters}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{avg_clusters}
+  \end{center}
+  \caption{Wyniki dla zmiany parametru clusters}
+  \label{fig:avg_clusters}
+\end{figure}
+Zgodnie z oczekiwaniami najbardziej wrażliwym algorytmem na zmianę ilości klastrów jest algorytm, który wykorzystuje ilość punktów należących do tego samego klastra. Oczywistym jest zatem, że przy zwiększaniu ilości klastrów zmniejsza się średnia ilość punktów / klaster co prowadzi do zwiększonej ilości punktów, które zostały sklasyfikowane jako odstające przez ten algorytm.
+\\\\
+Dla pozostałych dwóch algorytmów liczba ta nie ma większego znaczenia, ze względu na obliczane odległości w klastrze. Nie mniej jednak przy zwiększaniu ilości klastrów > 50 zauważalny jest drastyczny spadek ilości wykrytych anomalii co wynika ze zbyt małej ilości punktów w klastrze, żeby była zauważalna wyraźna różnica między wartością średnią a wartością pojedynczych punktów w klastrze.
+\subsubsection{Parametr distance\_ratio}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{avg_distance_ratio}
+  \end{center}
+  \caption{Wyniki dla zmiany parametru distance\_ratio}
+  \label{fig:avg_distance_ratio}
+\end{figure}
+Wraz ze wzrostem tego parametru można zauważyć stopniowe zmniejszanie się ilości punktów sklasyfikowanych jako odstające. Wynika to z tego, że parametr opisuje to jak odległe punkty muszą być od centroidu, żeby zostały sklasyfikowane odstające. Logiczne jest zatem, że im ten parametr jest większy, tym tych punktów jest w klastrze mniej.
+\subsubsection{Parametr similarity}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{avg_similarity}
+  \end{center}
+  \caption{Wyniki dla zmiany parametru similarity}
+  \label{fig:avg_similarity}
+\end{figure}
+Parametr ten opisuje jak wiele punktów musi klaster posiadać aby był on sklasyfikowany jako klaster zawierający punkty odstające. Biorąc pod uwagę średnią ilość punktów w klastrze wyniki optymalne uzyskano dla parametru o wartości między 3 a 5.
+\subsubsection{Parametr tolerance}
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{avg_tolerance}
+  \end{center}
+  \caption{Wyniki dla zmiany parametru tolerance}
+  \label{fig:avg_tolerance}
+\end{figure}
+Podobnie jak dla parametru distance\_ratio parametr tolerance opisuje jak dalekie punkty brane są pod uwagę przy klasyfikacji w zbiorze danych. Optymalną wartością są okolice 0.5.
 \subsection{Porównanie algorytmów}
 W celu przeprowadzenia testów zostały wybrane różne zbiory danych (wybór subiektywny). Na potrzeby lepszej analizy zbiory danych zostały pogrupowane na trzy rodzaje, w zależności od rodzaju charakterystyki oraz możliwości występowania punktów odstających (również podział subiektywny):
 \\
@@ -913,7 +970,7 @@ d12 & 1162 & SIBU & RNC\_5082 & A1, B2\\
 \end{tabu}
 \endgroup
 \\\\
-Dokładne charakterystyki powyżśzych zbiorów danych przedstawia dodatek A. Testy zostały przeprowadzone z wartościami domyślnymi.
+Dokładne charakterystyki powyższych zbiorów danych przedstawia dodatek A. Testy zostały przeprowadzone z wartościami domyślnymi.
 \subsubsection{Algorytm KMean - odległość od centroidu}
 \begin{figure}[H]
   \begin{center}
@@ -951,6 +1008,20 @@ Ta wersja algorytmu daje rezultaty o zwiększonym przedziale liczby sklasyfikowa
 Algorytm wykorzystuje informację o ilości punktów w danym klastrze. Jedynymi zbiorami danych, w których algorytm wykrył możliwe punkty odstające są te, które zostały sklasyfikowane jako zawierające miejsca wyciszenia lub zawierają punkty odstające bardzo oddalone od punktów sąsiadujących (d2 - przyrost wartości punktu potencjalnie odstającego jest ponad 3 krotny).
 \\\\
  Algorytm niemniej jednak ma bardzo wąskie zastosowanie - tylko dla zbiorów danych, w których klastry są tworzone przez pojedyncze punkty lub takie, które zawierają przerwy między jednym nagromadzeniem punktów a kolejnym. Na tle całości pracy algorytm ten ma raczej rolę pomocniczą lub rozstrzygającą (np. w sytuacji wykorzystania algorytmu fuzji).
+\subsubsection{Algorytm Isolation Forest}
+ \begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.7]{r_if}
+  \end{center}
+  \caption{Wyniki dla algorytmu Isolation Forest}
+  \label{fig:r_if}
+\end{figure}
+
+Z racji tego, że implementacja algorytmu wymaga podania procentowej zawartości punktów odstających oraz tego, że zbiory danych zostały wybrane (przefiltrowane) tak, aby zawierały > 700 punktów algorytm zawsze zwraca ilość punktów zbliżoną do 1\% ilości wszystkich punktów w zbiorze danych.
+\\\\
+Wyniki uzyskiwane dla tego algorytmu były zbyt rozbieżne z wynikami innych algorytmów (sklasyfikowane punkty nie były uznane jako odstające przez pozostałe algorytmy w prawie każdym przypadku). Nie oznacza to, że algorytm zupełnie źle działa, gdyż również w większości przypadków klasyfikował punkty zgodnie z oczekiwaniami. Niestety równie często klasyfikował punkty mniej oczywiste z pominięciem tych oczekiwanych.
+ 
+ 
 \subsubsection{Algorytm regresji liniowej}
 \begin{figure}[H]
   \begin{center}
