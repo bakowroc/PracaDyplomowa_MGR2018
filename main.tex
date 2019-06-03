@@ -17,7 +17,6 @@
 \usepackage{hhline}
 \usepackage{graphicx}
 \graphicspath{ {./img/} }
-\usepackage{showlabels}
 \usepackage{lmodern}
 \usepackage{tabu}
 
@@ -59,13 +58,13 @@
 
 
 \begin{document}
-\bibliographystyle{plain}
+\bibliographystyle{ieeetr}
 \maketitle 
 
 \tableofcontents 
 
 \chapter{Wstęp}  
-Sieci teleinformatyczne są integralną częścią infrastruktury współczesnego świata. Na ich poprawnym działaniu opiera się cały proces komunikacji, dlatego też mechanizmy ich rozwoju i utrzymywania należą do jednych z najważniejszych zadań korporacji, które takimi sieciami zarządzają. Wraz z rozwojem technologii mechanizmy zarządzania i utrzymywania mogły być stopniowo usprawniane. Jedną z technologii, która miała największy impakt był rozwój uczenia maszynowego, czyli implementacji zdolności algorytmu do podejmowania przyszłych decyzji na podstawie wcześniejszej analizy danych historycznych. Umożliwiło to nie tylko wyciągania wniosków w sposób automatyczny ale także dostarczyło mechanizmy do ich zmiany w sposób dynamiczny wraz ze zmianą zachowań sieci w czasie. Możliwość wykrywania błędów lub obserwacji odstających jest jednym z praktycznych przykładów, gdzie uczenie maszynowe ma zastosowanie.
+Sieci teleinformatyczne są integralną częścią infrastruktury współczesnego świata. Na ich poprawnym działaniu opiera się cały proces komunikacji, dlatego też mechanizmy ich rozwoju i utrzymywania należą do jednych z najważniejszych zadań korporacji, które takimi sieciami zarządzają. Wraz z rozwojem technologii mechanizmy zarządzania i utrzymywania mogły być stopniowo usprawniane. Jedną z technologii, która miała największy impakt był rozwój uczenia maszynowego, czyli implementacji zdolności algorytmu do podejmowania przyszłych decyzji na podstawie wcześniejszej analizy danych historycznych. Umożliwiło to nie tylko wyciągania wniosków w sposób automatyczny ale także dostarczyło mechanizmy do ich zmiany w sposób dynamiczny wraz ze zmianą zachowań sieci w czasie. Możliwość wykrywania błędów lub obserwacji odstających jest jednym z praktycznych przykładów, gdzie uczenie maszynowe ma zastosowanie. \cite{ml-book}
 \\\\
 Obserwację odstającą można zdefiniować jako punkt lub zbiór punktów, które swoimi wartościami różnią się od wartości punktów je otaczających. Obserwację taką można definiować lokalnie, gdzie anomalie to pojedyncze punkty a zbiorem porównawczym są punkty w bliskim sąsiedztwie lub bardziej globalnie, gdzie do analizy konkretnych przedziałów potrzebna jest wiedza o całym zbiorze (np. analiza miesięcznego trendu w danych ze stemplem czasowym). 
 \\ \\
@@ -86,16 +85,17 @@ Zdobyte dane zawierają również szereg dodatkowych informacji, które powinny 
 \\\\
 Po utworzeniu struktur i wypełnieniu ich danymi kolejnym krokiem jest wybranie istniejących już algorytmów wykrywania obserwacji odstających \cite{outliers-basic} a następnie ich implementacja w wybranym języku programistycznym lub wykorzystanie rozwiązań już wcześniej zaimplementowanych. Ilość zaimplementowanych algorytmów zależy w dużej mierze od stopnia trudności w ich implementacji oraz testowaniu a także od ilości dostępnych materiałów na ich temat. W obrębie wyboru algorytmów znajdzie się zatem nie tylko ich wyszukanie i implementacja ale także wstępna segregacja wraz z odrzuceniem tych mniej obiecujących czy nie pasujących do koncepcji. Część zaimplementowanych algorytmów może w końcowym etapie nie być brane pod uwagę ze względu właśnie na ich mniejszą użyteczność. Najbardziej obiecującą technologią jest język Python \cite{python} ze względu na dużą ilość bibliotek do tworzenia struktur i schematów danych \cite{pandas} a także działań matematycznych co uproszcza proces pisania algorytmów \cite{numpy}.
 \\\\
-Po zaimplementowaniu i przetestowaniu istniejących już rozwiązań oraz analizie ich wyników zostanie zaimplementowany własny algorytm, który wykorzystuje autorskie rozwiązania. Aby w procesie porównywania algorytmów wyniki były rzetelne i porównywalne rozwiązania te muszą wykorzystywać podobne mechaniki co wcześniej wybrane algorytmy \cite{isolation-forest}\cite{novelty}. 
+Po zaimplementowaniu i przetestowaniu istniejących już rozwiązań oraz analizie ich wyników zostanie zaimplementowany własny algorytm, który wykorzystuje autorskie rozwiązania. Aby w procesie porównywania algorytmów wyniki były rzetelne i porównywalne rozwiązania te muszą wykorzystywać podobne mechaniki co wcześniej wybrane algorytmy \cite{novelty}. 
 \\\\
 Końcowym etapem pracy jest napisanie raportu porównawczego oraz wybór cech, które będą ze sobą porównywane. Raport ten zawiera szereg porównań między kolejnymi algorytmami wraz ze wskazaniem tego optymalnego w zależności od przypadku użycia. Algorytmy są testowane kilkukrotnie na różnych zestawach danych (różniącymi się charakterystykami oraz wartościami). Na potrzeby lepszej wizualizacji porównań oraz działania poszczególnych algorytmów do raportu zostaną dołączone spore ilość wykresów, data gramów oraz tabel.
 
 \chapter{Wprowadzenie do metod wykrywania obserwacji odstających}
 Wykrywanie obserwacji odstających, nawet z zastosowaniem "inteligentnych" metod jest zadaniem problematycznym. Każde zebrane obserwacje (opisane za pomocą zbiorów danych) są bowiem w pewien sposób unikalne, toteż algorytmy powinny być w stanie się dopasować do charakterystyki rozkładu obserwacji w sposób automatyczny (powinny się adaptować do zmian). Dodatkowo wykrywane powinny być zarówno punkty bardzo odstające (ewidentnie nie pasujące do charakterystyki) oraz te mniej oczywiste, wynikające bardziej z niedopasowania do np. trendu niż do wartości. Powoduje to problem "wyważenia" takich algorytmów, czyli sprawienia, żeby dany algorytm był efektywny dla obu tych rodzajów punktów, co nie zawsze jest możliwe do uzyskania.
 \\\\
-Specyfika dostarczonych danych, które są wykorzystywane do przeprowadzenia badań i symulacji wybranych metod narzuca pewne ograniczenia co do wyboru i wykorzystania algorytmów. Wynika to z braku jakichkolwiek wzorcowych zbiorów danych, które mogłyby posłużyć jako zbiory uczące. Zbiór mechanik, metod i algorytmów ogranicza się jedynie do tych, które dobrze radzą sobie z danymi nieetykietowanymi. Wybrane algorytmy zatem powinny mieć możliwość klasyfikacji zbioru danych (podziału wg. określonych cech) a następnie na podstawie określonego warunku i parametrów określały punkty odstające.
+Specyfika dostarczonych danych, które są wykorzystywane do przeprowadzenia badań i symulacji wybranych metod narzuca pewne ograniczenia co do wyboru i wykorzystania algorytmów. Wynika to z braku jakichkolwiek wzorcowych zbiorów danych, które mogłyby posłużyć jako zbiory uczące. Zbiór mechanik, metod i algorytmów ogranicza się jedynie do tych, które dobrze radzą sobie z danymi nieetykietowanymi. Wybrane algorytmy zatem powinny mieć możliwość klasyfikacji zbioru danych (podziału wg. określonych cech) a następnie na podstawie określonego warunku i parametrów określały punkty odstające \cite{outlier-detection-alg}  \cite{outlier-detection-alg-1}.
 \section{Metoda okna czasowego}
-Metoda okna czasowego jest to sposób podziału całego zbioru danych na szereg mniejszych zbiorów zawierających się w pojedynczym, z góry określonym wycinku czasowym (dziedzina funkcji) \cite{windowing}.\\
+\label{sec:window}
+Metoda okna czasowego jest to sposób podziału całego zbioru danych na szereg mniejszych zbiorów zawierających się w pojedynczym, z góry określonym wycinku czasowym (dziedzina funkcji) \cite{windowing} \cite{windowing-1}.\\
 Podział określają dwa parametry:
 \begin{itemize}
 \item \textbf{szerokość okna} - ilość punktów dla podzbiorów wygenerowanych z podanego zbioru danych
@@ -107,11 +107,14 @@ Startowa pozycja okna to punkt 0 na osi X (dziedzina). Okno przesuwa się w praw
 Działanie metody wizualizuje rysunek \ref{fig:okno_czasowe}.
 
 \begin{figure}[H]
+
+ \label{fig:okno_czasowe}
   \begin{center}
+  
   \includegraphics[scale=0.7]{okno_czasowe}
-  \end{center}
   \caption{Działanie metody podziału na okna czasowe}
-  \label{fig:okno_czasowe}
+  
+  \end{center}
 \end{figure}
 
 
@@ -124,6 +127,7 @@ W zależności od zastosowanego algorytmu na podzbiorach metoda ta powinna dziel
 Zastosowanie tej metody zatem jest opłacalne jedynie, gdy badany zbiór danych posiada sporą ilość wartości (liczonych w setkach). Dla mniejszych zbiorów danych stosowanie tej metody nie ma sensu. 
 
 \section{Algorytm K-Mean}
+\label{sec:kmean}
 Algorytm opierający swoje działanie na podziale zbioru danych na podzbiory nazywane klastrami (ang. clusters). Przydział punktów do konkretnego klastra polega na obliczaniu jego odległości względem punktów sąsiednich (odległość euklidesowa). \\ \\
 Algorytm przyjmuje wiele parametrów, jednak najważniejszym jest ilość klastrów, na które należy podzielić zbiór danych.
 
@@ -142,12 +146,14 @@ Podział serii danych ze stemplem czasowym na pojedyncze klastry wraz z centroid
 Informację o przynależności punktu do konkretnego klastra można wykorzystać do wyznaczenia punktów odstających lokalnie (w jednym klastrze). \\
 Sam stempel czasowy jest cechą słabą (jest ona różna dla każdego punktu), dlatego przy stosowaniu tej metody należy rozważyć przypisanie cech dodatkowych, dzięki którymi podział na klastry będzie bardziej dokładniejszy.
 \subsection{Wykorzystanie odległości od centroidu}
+\label{sec:kmean_dist}
 Jednym ze sposobów określania punktu jako odstającego jest obliczenie jego odległości w układzie współrzędnych od centroidu klastra, do którego ten punkt należy. Następnie można wyznaczyć punkty odstające na dwa sposoby:
 \begin{itemize}
 \item \textbf{odrzucić punkty powyżej zadanego progu} - z zadanym warunkiem odrzucenia, wszystkie punkty, które przekraczają próg warunku zostają sklasyfikowane jako odstające. Metoda wymaga dodatkowych obliczeń takich jak wartość środkowa wartości w każdym klastrze w celu określenia punktu odniesienia. Warunek może przyjąć różne formy, lecz zazwyczaj opiera się on na proporcji względem wartości w zbiorze (np. przekroczenie dwukrotnej wartości średniej lub stosunek wartości średniej do wartości liczonego punktu).
 \item \textbf{odrzucić punkty najbardziej odległe} - trochę prostsza metoda, zakłada, że każdy zbiór danych zawiera pewne ilości punktów odstających, dlatego klasyfikuje najbardziej oddalone punkty jako odstające (biorąc pod uwagę wszystkie punkty, ze wszystkich klastrów, posortowane wartościami odległości od swoich centroidów). Ilość wybranych punktów jest zadana z góry, zazwyczaj około 5-10. Można by zakładać, że takie podejście jest niepoprawne, dlatego rekomenduje się przeprowadzenie wielokrotnych przeliczeń tego samego zbioru danych a następnie uśrednienie wartości otrzymanych (np. przeprowadzenie kilkukrotnych iteracji a następnie uwzględnienie punktów jako dostające jedynie wtedy, gdy wystąpiły one w 90 procentach przeprowadzonych iteracji)  \cite{kmean_dist}. 
 \end{itemize}
 \subsection{Wykorzystanie całych klastrów}
+\label{sec:kmean_sim}
 Kolejną metodą wykorzystującą algorytm klasteryzacji KMean jest metoda klasyfikująca całe klastry jako odstające. Wynika to z założenia, że testowe zbiory danych mogą zawierać pewne przedziały mocno niepasujących, pojedynczych danych (klaster bardzo odległy od pozostałych klastrów). Jeśli zatem klaster zawiera znacznie małą ilość punktów (w porównaniu do ilości zdefiniowanych klastrów oraz wielkości zbioru danych) to istnieje duże prawdopodobieństwo, że zawiera on jedynie punkty odstające. \\\\
 Metoda defniuje dodatkowy parametr opisujący procentową liczbę punktów zawartych w klastrze jako warunek, na podstawie którego stwierdzana jest klasyfikacja klastra jako całego zbioru punktów odstających.
 \\\\
@@ -164,7 +170,8 @@ Jak można zauważyć klastry zaznaczone na czerwono zawierają małą ilość p
 Geneza metody wynika z pewnej wiedzy o prawdopodobnych wystąpieniach punktów odstających w otrzymanych zbiorach danych i jest w pełni autorska (nie uwzględniając algorytmu KMean).
 
 \section{Algorytm Isolation Forest}
-Algorytm klasyfikujący zbiór danych za pomocą prób separacji pojedynczych punktów od całej reszty. Punkty uznaje się za odstający gdy liczba separacji była mała (w stosunku do pozostałych punktów). Założeniem tego algorytmu jest to, że punkt odstający można odseparować skończenie małą liczbą losowych podziałów zbioru (ze względu na jego dużą odległość od "głównego" skupiska / nagromadzenia pozostałych punktów). Punkt niebędący anomalią daje się odseparować dużo większą ilością podziałów. Na podstawie maksymalnej oraz średniej ilości takich podziałów algorytm wyznacza optymalną ilość, która stanowi próg dla punktów odstających i na tej podstawie je klasyfikuje.
+\label{sec:if}
+Algorytm klasyfikujący zbiór danych za pomocą prób separacji pojedynczych punktów od całej reszty. Punkty uznaje się za odstający gdy liczba separacji była mała (w stosunku do pozostałych punktów). Założeniem tego algorytmu jest to, że punkt odstający można odseparować skończenie małą liczbą losowych podziałów zbioru (ze względu na jego dużą odległość od "głównego" skupiska / nagromadzenia pozostałych punktów). Punkt niebędący anomalią daje się odseparować dużo większą ilością podziałów. Na podstawie maksymalnej oraz średniej ilości takich podziałów algorytm wyznacza optymalną ilość, która stanowi próg dla punktów odstających i na tej podstawie je klasyfikuje \cite{isolation-forest} \cite{isolation-forest-1}.
 \\\\
 Działanie algorytmu opisuje rysunek \ref{fig:isolation_forest}.
 
@@ -176,6 +183,7 @@ Działanie algorytmu opisuje rysunek \ref{fig:isolation_forest}.
   \label{fig:isolation_forest}
 \end{figure}
 \section{Algorytm regresji liniowej}
+\label{sec:reg}
 Algorytm regresji liniowej jest najprostszym z wybranych algorytmów. Na zadanym zbiorze danych wyznaczana jest prosta regresji za pomocą metody najmniejszych kwadratów, czyli funkcja liniowa reprezentująca oszacowane wartości bazując na zadanym zbiorze danych. 
 \\\\
 Dla każdego punktu czasowego linia regresji wyznacza pewną wyestymowaną wartość. Różnica wartości tego punktu oraz punktu aktualnego (ze zbioru danych) jest nazywana błędem.
@@ -443,6 +451,7 @@ Końcowa strutkura pojedynczego punktu wygląda zatem następująco:
 \endgroup
 
 \subsection{Algorytm uruchamiania metody w pętli}
+\label{sec:looping}
 Ze względu na pewną losowość wykorzystanych algorytmów uczenia maszynowego jednokrotne uruchomienie algorytmów na zbiorze danych może nie być jednoznacznie rozstrzygające (nigdy nie będzie, jednak można zwiększyć jego wiarygodność) został zaimplementowany algorytm uruchamiający jedną metodę wyszukiwania obserwacji odstających kilkukrotnie (w pętli). Ilość iteracji jest zadana z góry, niezmienność wyników została zaobserwowana już w granicach 10 - 15 razy. 
 \\\\
 Działanie pojedynczej iteracji można przedstawić w poniższy sposób:
@@ -494,7 +503,7 @@ Algorytm można zaimplementować w następujący sposób:
 
 
 \subsection{Podział zbioru danych na okna czasowe}
-Zgodnie z opisem w punkcie 2.1 algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
+Zgodnie z opisem w punkcie \ref{sec:window} algorytm podziału na okna czasowe można zaimplementować w poniższy sposób:
 \\
 \begin{lstlisting}
 import numpy as np
@@ -509,7 +518,7 @@ def create_windows(data, window_len, slide_len):
     return chunks
 \end{lstlisting}
 \subsection{Metoda odległości od centroidów z wykorzystaniem algorytmu KMean}
-Metoda opisana w punkcie 2.2.1 została w zaimplementowana w całości, z uwzględnieniem dwóch warunków definiowania punktu jako odstający. Wybór jednej z nich odbywa się na żądanie użytkownika. W procesie testowania metod oba warunki są używane w celu porównania ich działania. Końcowe działanie metody można przedstawić na prostym przykładzie:
+Metoda opisana w punkcie \ref{sec:kmean_dist} została w zaimplementowana w całości, z uwzględnieniem dwóch warunków definiowania punktu jako odstający. Wybór jednej z nich odbywa się na żądanie użytkownika. W procesie testowania metod oba warunki są używane w celu porównania ich działania. Końcowe działanie metody można przedstawić na prostym przykładzie:
 \\\\
 Badaniu został poddany zbiór zawierający 30 punktów. Liczba klastrów została ustalona na 2. Podział przedstawia rysunek \ref{fig:kmean_dist}.
 \begin{figure}[H]
@@ -551,7 +560,7 @@ W zależności od wyboru metody punkty sklasyfikowane jako odstające po pierwsz
 Powyższy przykład nie ilustruje rzeczywistego działania algorytmu. Przyjęto pewne uproszczenia i zaokrąglenia przy wyznaczaniu miar i punktów odstających.
 
 \subsection{Metoda ilości punktów w klastrze z wykorzystaniem algorytmu KMean}
-Metoda opisana w punkcie 2.2.2 została zaimplementowana zgodnie z opisem uwzględniając obliczenie parametrów, które są wymagane do obiczenia warunku (progu):
+Metoda opisana w punkcie \ref{sec:kmean_sim} została zaimplementowana zgodnie z opisem uwzględniając obliczenie parametrów, które są wymagane do obiczenia warunku (progu):
 \begin{itemize}
 	\item stosunek wielkości zbioru danych do ilości klastrów
 	\item ilość punktów w każdym klastrze
@@ -601,7 +610,7 @@ def calculate_outlier_prob(_mean, _max, dict_clusters, label, similarity) -> boo
 
 
 \subsection{Algorytm Isolation Forest}
-Algorytm nie wymaga implementacji warunku czy progu, na podstawie którego klasyfikowany jest punkt jako odstający. Metoda ta zwraca kolekcję sklasyfikowanych już punktów na podstawie szerego przyjętych parametrów.
+Algorytm opisany w punkcie \ref{sec:if} nie wymaga implementacji warunku czy progu, na podstawie którego klasyfikowany jest punkt jako odstający. Metoda ta zwraca kolekcję sklasyfikowanych już punktów na podstawie szeregu przyjętych parametrów.
 \\\\
 Implementacja może wyglądać następująco:
 \\
@@ -633,8 +642,8 @@ def isl_forest(dataset):
 Ze względu na niepewność i duży rozrzut uzyskiwanych wyników algorytm ten nie jest częścią algorytmu fuzji.
 
 \subsection{Metoda regresji liniowej z wykorzystaniem podziału na okna czasowe}
-Metoda polegająca na klasyfikacji obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie 2.3) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie 2.1. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie 3.3.3). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (3.3.3), próg 80 procent lub więcej. \\\\
-Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (3.3.3) łączenie tych dwóch podejść jest już zbędne.
+Metoda polegająca na klasyfikacji obserwacji odstających za pomocą metody wyznaczenia linii regresji (opisana w punkcie \ref{sec:reg}) w każdym oknie czasowym wyznaczonym metodą opisaną w punkcie \ref{sec:window}. Następnie przed przesunięciem okna i przystąpienia do kolejnej iteracji punkty sklasyfikowane jako odstające są zapamiętywane a ich wystąpienia zliczane (podobnie jak w metodzie opisanej w punkcie \ref{sec:looping}). Następnie po ostatniej iteracji zliczany jest stosunkowy procent wystąpienia punktu jako odstającego (ilość wystąpień / ilość iteracji(ilość okien)). Warunkiem klasyfikacji jest, podobnie jak w metodzie uruchamiania metody w pętli (\ref{sec:looping}), próg 80 procent lub więcej. \\\\
+Z racji tego, że samo działanie metody jest zbliżone do uruchamiania metod w pętli (\ref{sec:looping}) łączenie tych dwóch podejść jest już zbędne.
 \\\\
 Działanie algorytmu przedstawia rysunek \ref{fig:reg_windowed}.
 \begin{figure}[H]
@@ -674,11 +683,13 @@ def get_fusion_result(methods, precision):
 
     return final_result
 \end{lstlisting}
+
 \chapter{Aplikacja internetowa}
 W celu analizy i przeprowadzania pojedynczych testów w łatwy i szybki sposób została stworzona aplikacja internetowa z poziomu której można wybrać konkretne zbiory danych oraz uruchomić algorytmy z zadeklarowanymi metodami wyszukiwania obserwacji odstających. Aplikacja dodatkowo umożliwia analizę oraz wizualizację zbiorów danych wraz z narzuconymi na wykres punktami sklasyfikowanymi jako odstające.
+
 \subsection{Struktura aplikacji}
 Aplikacja została podzielona na trzy główne warstwy, które komunikują się ze sobą oraz wymieniają dane za pomocą zapytań HTTP oraz SQL Query. Schemat komunikacji w prostu sposób ilustruje rysunek \ref{fig:layers}.
-
+\\
 \begin{figure}[H]
   \begin{center}
   \includegraphics[scale=0.7]{layers}
@@ -686,7 +697,6 @@ Aplikacja została podzielona na trzy główne warstwy, które komunikują się 
   \caption{Schemat komunikacji między warstwami aplikacji}
   \label{fig:layers}
 \end{figure}
-
 \subsubsection{Warstwa frontendowa}
 Warstwa odpowiedzialna za dostarczenie użytkownikowi informacji (danych) w graficzny sposób w przeglądarce internetowej. Dostarcza interfejs graficzny, który implementuje interaktywne elementy, za pomocą których generowane są zapytania do warstwy backendowej. Ze względu na jedynie pomocniczą rolę aplikacji internetowej w całym projekcie warstwa ta jest ograniczona do niezbędnego minimum.
 \\\\
@@ -979,11 +989,10 @@ Dokładne charakterystyki powyższych zbiorów danych przedstawia dodatek A. Tes
   \caption{Wyniki dla algorytmu KMean - odległość od centroidu (wariant stały)}
   \label{fig:r_dist_f}
 \end{figure}
-
 Algorytm w tym wariancie w każdym zbiorze danych znalazł punkty odstające. Co więcej ich liczba oscyluje w granicach 5, co jest rezultatem sztywnego ustalenia co najmniej 5 punktów w pojedynczym rezultacie. Nawet pomimo użycia algorytmu uruchamiania metod w pętli, ze względu na mniejszą niż spodziewana losowość algorytmu KMean tylko w dwóch zbiorach danych została zauważona różnica.
 \\\\
 Metoda odległości od centroidu daje najlepsze, najbardziej trafne rezultaty, nawet pomimo stałej wartości zwracanych punktów (zawsze są to punkty, które przynajmniej warto rozważyć, gdyż rezultat nie jest oczywisty). Nie zostały zaobserwowane sklasyfikowania zupełnie błędne, które należałoby od razu odrzucić.
-
+\\
 \begin{figure}[H]
   \begin{center}
   \includegraphics[scale=0.7]{r_dist_c}
@@ -991,10 +1000,7 @@ Metoda odległości od centroidu daje najlepsze, najbardziej trafne rezultaty, n
   \caption{Wyniki dla algorytmu KMean - odległość od centroidu (wariant obliczeniowy)}
   \label{fig:r_dist_c}
 \end{figure}
-
 Ta wersja algorytmu daje rezultaty o zwiększonym przedziale liczby sklasyfikowanych punktów jako odstające. Ze względu na obecność progu (warunku), na podstawie którego punkt jest klasyfikowany jako anomalia uzyskiwane rezultaty są bardziej powiązane z faktyczną charakterystyką zbioru danych oraz zmianami w nim zachodzącymi. Takie podejście jest jednocześnie dobre oraz złe, gdyż obliczony warunek w specyficznych przypadkach powoduje, że zbyt duża lub zbyt mała ilość punktów jest klasyfikowana (co przedstawia wykres \ref{fig:r_dist_c}). Wynika to np. z dużej ilości nagromadzenia punktów odstających obok siebie, lub stopniowe zwiększanie / zmniejszanie się kolejnych wartości w czasie w pojedynczym odcinku (wycinek charakterystyki, który nie pasuje do całokształtu, np. zbiór d5, d8).
-
-
 
 \subsubsection{Algorytm KMean - ilość punktów w klastrze}
 \begin{figure}[H]
@@ -1004,7 +1010,6 @@ Ta wersja algorytmu daje rezultaty o zwiększonym przedziale liczby sklasyfikowa
   \caption{Wyniki dla algorytmu KMean - ilość punktów w klastrze}
   \label{fig:r_sim}
 \end{figure}
-
 Algorytm wykorzystuje informację o ilości punktów w danym klastrze. Jedynymi zbiorami danych, w których algorytm wykrył możliwe punkty odstające są te, które zostały sklasyfikowane jako zawierające miejsca wyciszenia lub zawierają punkty odstające bardzo oddalone od punktów sąsiadujących (d2 - przyrost wartości punktu potencjalnie odstającego jest ponad 3 krotny).
 \\\\
  Algorytm niemniej jednak ma bardzo wąskie zastosowanie - tylko dla zbiorów danych, w których klastry są tworzone przez pojedyncze punkty lub takie, które zawierają przerwy między jednym nagromadzeniem punktów a kolejnym. Na tle całości pracy algorytm ten ma raczej rolę pomocniczą lub rozstrzygającą (np. w sytuacji wykorzystania algorytmu fuzji).
@@ -1016,11 +1021,9 @@ Algorytm wykorzystuje informację o ilości punktów w danym klastrze. Jedynymi 
   \caption{Wyniki dla algorytmu Isolation Forest}
   \label{fig:r_if}
 \end{figure}
-
 Z racji tego, że implementacja algorytmu wymaga podania procentowej zawartości punktów odstających oraz tego, że zbiory danych zostały wybrane (przefiltrowane) tak, aby zawierały > 700 punktów algorytm zawsze zwraca ilość punktów zbliżoną do 1\% ilości wszystkich punktów w zbiorze danych.
 \\\\
 Wyniki uzyskiwane dla tego algorytmu były zbyt rozbieżne z wynikami innych algorytmów (sklasyfikowane punkty nie były uznane jako odstające przez pozostałe algorytmy w prawie każdym przypadku). Nie oznacza to, że algorytm zupełnie źle działa, gdyż również w większości przypadków klasyfikował punkty zgodnie z oczekiwaniami. Niestety równie często klasyfikował punkty mniej oczywiste z pominięciem tych oczekiwanych.
- 
  
 \subsubsection{Algorytm regresji liniowej}
 \begin{figure}[H]
@@ -1030,7 +1033,6 @@ Wyniki uzyskiwane dla tego algorytmu były zbyt rozbieżne z wynikami innych alg
   \caption{Wyniki dla algorytmu regresji liniowej}
   \label{fig:r_reg}
 \end{figure}
-
 Uzyskano bardzo duże rozrzuty między ilością sklasyfikowanych punktów w kolejnych zbiorach danych. Wynika to głównie z braku trendu oraz dużego rozrzutu między wartością maksymalną, minimalną oraz środkową (np. zbiór danych d5, gdzie charakterystyka jest bardziej zbliżona do funkcji kwadratowej niż liniowej).
 \\\\
 Algorytm ten znajduje zastosowanie jednak w większości zbiorach danych (ilość sklasyfikowanych punktów jest w granicach normy) a punkty, który są klasyfikowane jako odstające zazwyczaj pokrywają się z subiektywnymi oczekiwaniami.
@@ -1042,12 +1044,251 @@ Algorytm ten znajduje zastosowanie jednak w większości zbiorach danych (iloś�
   \caption{Wyniki dla algorytmu fuzji}
   \label{fig:r_fusion}
 \end{figure}
-
 Wyniki dla tego algorytmu pokazują, że niezależnie od zbioru danych, obserwacje odstające zostały znalezione, nawet w tych sklasyfikowanych jako nie zawierających wyraźnych punktów odstających. Algorytm fuzji w wielu przypadkach daje spodziewane rezultaty co do oczekiwanych punktów odstających. Użycie kombinacji wielu algorytmów, które mają zastosowanie tylko w specyficznych zbiorach danych powoduje, że uwzględniana jest zmienność zbioru danych w czasie (zmiana charakterystyki, zmiana trendu). Dodatkowo użycie tego mechanizmu podnosi pewność uzyskanych wyników.
 \\\\
 Algorytm może się nie sprawdzać w momentach gdy zbiór danych ma utrzymującą się charakterystykę specyficzną tylko dla jednego algorytmu.
+\subsection{Podsumowanie}
+Najbardziej trafne wyniki uzyskiwano dla algorytmu KMean wraz z liczeniem odległości od centroidu w klastrze (oba warianty). Dawały one przynajmniej zadowalające wyniki w prawie każdym testowanym zbiorze danych (wraz ze zbiorami nie uwzględnionymi w badaniach). Algorytm ten wraz z metodami jest najbardziej obiecującym z pośród wszystkich zaimplementowanych i ma największe szanse na późniejszy rozwój. Zaskakujące wyniki dawał algorytm regresji liniowej, który w sporej ilości przeprowadzonych testów i badań znajdował zastosowanie pomimo swojej prostoty działania, był jednak zdecydowanie bardziej ograniczony od pozostałych. Najgorsze wyniki uzyskiwał algorytm KMean wraz z metodą ilości punktów w klastrze. W posiadanych zbiorach danych rzadko bowiem zdarzały się te, w których charakterystyka była na tyle specyficzna. Algorytm w dużej ilości testów określał punkty, których klasyfikacja jako odstających nie była zupełnie oczekiwana. Być może algorytm znalazłby zastosowanie w zbiorach danych o lekko innym pochodzeniu. Kolejnym algorytmem, który dawał mieszane wyniki był algorytm Isolation Forest. Jego rezultaty były bardzo losowe, przez co jego użycie nie jest jednoznaczne. W około 20 - 30\% otrzymywano jednak wyniki w miarę poprawne, toteż być może został on zaimplementowany w zły sposób (jego próba polepszenia powinna być wzięta pod uwagę).
+
 \section{Wnioski}
-
-
+Przeprowadzone badania i otrzymane wyniki pokazały, jak trudnym i skomplikowanym zagadnieniem jest wykrywanie obserwacji odstających. Pomimo zaimplementowania trzech algorytmów w różnych wariantach żaden z nich nie dawał stuprocentowej pewności co do zwracanych wyników. Duży wpływ na sposób implementacji oraz w rezultacie wyniki miał również fakt, że zbiory danych nie posiadały zbiorów testowych a punkty były nieetykietowane.nie posiadały etykiet wskazujących na ich przynależność. Dodatkowo na każdy zbiór danych składały się punkty jedynie o dwóch cechach, które okazały się cechami słabymi. Wszystko to złożyło się na niekonwencjonalne podejście do metodyki i implementacji wyszukiwania obserwacji odstających. By otrzymać rezultaty co najmniej satysfakcjonujące należało podejść do problemu nie tylko jako problemu uczenia maszynowego ale również jako problemu matematycznego, gdzie duże znaczenie miały wyliczone miary statystyczne.
+\\\\
+W końcowym efekcie nie udało się stworzyć unikalnego systemu wyszukiwania obserwacji odstających a jedynie pojedyncze algorytmy, które miały zastosowanie przy zachowaniu ściśle określonych warunków takich jak typu zbioru danych, rodzaj opisywanych metryk czy charakterystyki oraz trendu. Być może również otrzymane dane, które posłużyły za materiał testowy do wytworzenia systemu swoim pochodzeniem nie nadają się do rozwiązania tak sformowanego problemu z tak przyjętymi kryteriami i parametrami. Praca w końcowych etapach wykorzystywała bardzo dużo subiektywnych opinii (wybór zbiorów danych, algorytmów czy stawianie oczekiwań co do wyników). W systemie brakowało sporej ilości dodatkowych informacji o zbiorach danych (np. prawdopodobieństwo wystąpienia anomalii w danym okresie czasu ze względu na czynniki zewnętrzne mające miejsce w tym czasie) co sprawiło, że system w dużej mierze działa "na ślepo", co występuje również w subiektywnym (ludzkim) podejściu do wskazywania prawdopodobnych punktów odstających.
+\\\\
+System w obecnej postaci może stanowić pomoc przy rozbudowaniu podobnych systemów wyszukiwania anomalii. Daje on wyniki średnie, jednak w sporej mierze (subiektywnie) trafne. System może być podstawą do przynajmniej rozpoczęcia głębszych analiz w procesie wyszukiwania obserwacji odstających.
+\subsection{Problemy i trudności}
+Największym problem stanowił sam proces wyboru, implementacji metod oraz doboru parametrów do nich. Optymalne wartości wynikały z licznych prób oraz poprawek. Ze względu na specyfikę użytych zbiorów danych dużą częścią implementacji systemu stanowiły dopasowanie oraz próby kolejnych wersji tych samych algorytmów w celu wybrania optymalnego. Ilość źródeł na temat wyszukiwanie obserwacji odstających była obszerna, jednak opisywane w nich problemy nie miały często zastosowania w pracy ze względu na m.in. zbiory danych o innych charakterystykach (więcej cech, inne pochodzenie, pewna wiedza o np. awariach, przerwach w działaniu).
+\\\\ 
+Problematycznym był również proces przeprowadzenia badań i zestawienia wyników. Ze względu na brak jednoznacznego wskazania na wykryte przez algorytmy anomalie analiza porównawcza algorytmów nie jest w stanie wskazać lepszego czy gorszego algorytmu opierając się jedynie na otrzymanych wynikach. Brakowało kryteriów, w których algorytmy mogły być porównywane a przez to można mieć odczucie, że analiza porównawcza nie wykazała niczego.
+\subsection{Możliwości rozwoju}
+Stworzony system nie jest system skończonym. Jego pełna implementacja wymaga mniejszych lub większych poprawek oraz usprawnień. Założeniem systemu było poprawne wykrywanie obserwacji odstających w nieetykietowanych zbiorach danych. Założenie to jest spełnione tylko w pewnej części. System posiada możliwości rozwoju w prawie każdym aspekcie, jednak najważniejszym z nich jest usprawnienie samego systemu klasyfikacji oraz oznaczanie punktów jako anomalie. Kroki jakie mogą zostać podjęte w tym celu to m.in:
+\begin{itemize}
+  \item edycja oraz usprawnienie zaimplementowanych algorytmów oraz metod w nich wykorzystywanych
+  \item odrzucenie oraz implementacja nowych algorytmów lub samych metod do algorytmów już istniejących
+  \item lepsze wykorzystanie mechanizmów uczenia maszynowego, np. zastosowanie innych dodatkowych cech czy próba utworzenia / dostarczenia zbiorów testowych
+  \item próba dostarczenia informacji dodatkowych (czynniki zewnętrzne) narzucone na np. oś czasu, przez co proces klasyfikacji będzie w stanie lepiej dopasować etykietę np. w punktach mniej pewnych
+  \item próba etykietowania punktów (np. wyznacznikiem prawdopodobieństwa) przed procesem wyszukiwaniem obserwacji odstających 
+\end{itemize}
+Do pomniejszych możliwości usprawnienia należy lepsze zarządzanie procesami testowania i analizy systemu (raportowanie, uruchamianie testów w pętli). Dodatkowo można przeanalizować zmianę bazy danych na bardziej przyjazną w implementacji i użytkowaniu. Warto również pomyśleć nad zmniejszeniem czasu, który jest potrzebny do otrzymania wyników dla pojedynczego zbioru danych (pośrednio zależne od możliwości odczytu i zapisu bazy danych).
 \bibliography{bibliografia}
+\chapter{Dodatek A}
+Poniższe charakterystyki zbiorów danych zostały wygenerowane za pomocą zaimplementowanej aplikacji internetowej.
+\\\\
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d1 & 899 & OYTAL & RNC\_165 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d1}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d2 & 53 & NOGALES & MGW\_1123 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d2}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d3 & 53 & NOGALES & MSC\_601 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.4]{d3}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d4 & 53 & OCNITA & RNC\_615\\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d4}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d5 & 534 & AGUA\_PRIETA & LTE\_1079 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.4]{d5}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d6 & 998 & DARHAN & SGSN\_525 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d6}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d7 & 998 & DARHAN & SGSN\_544 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.4]{d7}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d8 & 160 & MOTUL & RNC\_5464 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.4]{d8}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d9 & 283 & VILANI & RNC\_5081 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d9}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d10 & 283 & ORIZBA & LTE\_5058 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d10}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d11 & 1162 & SIBU & RNC\_165 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.53]{d11}
+  \end{center}
+\end{figure}
+\newpage
+
+\begingroup
+\fontsize{10pt}{12pt}\selectfont
+\begin{tabu} to 0.9\textwidth { | X[l] | X[l] | X[l] | X[l] |}
+\hline
+\textbf{Nazwa} & \textbf{Operator} & \textbf{Acronym} & \textbf{KPI Name} \\
+\hline
+d12 & 1162 & SIBU & RNC\_5082 \\
+\hline
+\end{tabu}
+\endgroup
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.4]{d12}
+  \end{center}
+\end{figure}
+\newpage
+
 \end{document}
