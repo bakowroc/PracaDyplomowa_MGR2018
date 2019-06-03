@@ -64,7 +64,7 @@
 \tableofcontents 
 
 \chapter{Wstęp}  
-Sieci teleinformatyczne są integralną częścią infrastruktury współczesnego świata. Na ich poprawnym działaniu opiera się cały proces komunikacji, dlatego też mechanizmy ich rozwoju i utrzymywania należą do jednych z najważniejszych zadań korporacji, które takimi sieciami zarządzają. Wraz z rozwojem technologii mechanizmy zarządzania i utrzymywania mogły być stopniowo usprawniane. Jedną z technologii, która miała największy impakt był rozwój uczenia maszynowego, czyli implementacji zdolności algorytmu do podejmowania przyszłych decyzji na podstawie wcześniejszej analizy danych historycznych. Umożliwiło to nie tylko wyciągania wniosków w sposób automatyczny ale także dostarczyło mechanizmy do ich zmiany w sposób dynamiczny wraz ze zmianą zachowań sieci w czasie. Możliwość wykrywania błędów lub obserwacji odstających jest jednym z praktycznych przykładów, gdzie uczenie maszynowe ma zastosowanie. \cite{ml-book}
+Sieci teleinformatyczne są integralną częścią infrastruktury współczesnego świata. Na ich poprawnym działaniu opiera się cały proces komunikacji, dlatego też mechanizmy ich rozwoju i utrzymywania należą do jednych z najważniejszych zadań korporacji, które takimi sieciami zarządzają. Wraz z rozwojem technologii mechanizmy zarządzania i utrzymywania mogły być stopniowo usprawniane. Jedną z technologii, która miała największy impakt był rozwój uczenia maszynowego, czyli implementacja zdolności programu lub algorytmu do podejmowania przyszłych decyzji na podstawie wcześniejszej analizy danych historycznych. Umożliwiło to nie tylko wyciąganie wniosków w sposób automatyczny ale także dostarczyło mechanizmy do ich zmiany w sposób dynamiczny wraz ze zmianą zachowań sieci w czasie. Możliwość wykrywania błędów lub obserwacji odstających jest jednym z praktycznych przykładów, gdzie uczenie maszynowe ma zastosowanie \cite{ml-book}.
 \\\\
 Obserwację odstającą można zdefiniować jako punkt lub zbiór punktów, które swoimi wartościami różnią się od wartości punktów je otaczających. Obserwację taką można definiować lokalnie, gdzie anomalie to pojedyncze punkty a zbiorem porównawczym są punkty w bliskim sąsiedztwie lub bardziej globalnie, gdzie do analizy konkretnych przedziałów potrzebna jest wiedza o całym zbiorze (np. analiza miesięcznego trendu w danych ze stemplem czasowym). 
 \\ \\
@@ -171,7 +171,7 @@ Geneza metody wynika z pewnej wiedzy o prawdopodobnych wystąpieniach punktów o
 
 \section{Algorytm Isolation Forest}
 \label{sec:if}
-Algorytm klasyfikujący zbiór danych za pomocą prób separacji pojedynczych punktów od całej reszty. Punkty uznaje się za odstający gdy liczba separacji była mała (w stosunku do pozostałych punktów). Założeniem tego algorytmu jest to, że punkt odstający można odseparować skończenie małą liczbą losowych podziałów zbioru (ze względu na jego dużą odległość od "głównego" skupiska / nagromadzenia pozostałych punktów). Punkt niebędący anomalią daje się odseparować dużo większą ilością podziałów. Na podstawie maksymalnej oraz średniej ilości takich podziałów algorytm wyznacza optymalną ilość, która stanowi próg dla punktów odstających i na tej podstawie je klasyfikuje \cite{isolation-forest} \cite{isolation-forest-1}.
+Algorytm klasyfikujący zbiór danych za pomocą prób separacji pojedynczych punktów od całej reszty. Punkty uznaje się za odstające gdy liczba separacji była mała (w stosunku do pozostałych punktów). Założeniem tego algorytmu jest to, że punkt odstający można odseparować skończenie małą liczbą losowych podziałów zbioru (ze względu na jego dużą odległość od "głównego" skupiska / nagromadzenia pozostałych punktów). Punkt niebędący anomalią daje się odseparować dużo większą ilością podziałów. Na podstawie maksymalnej oraz średniej ilości takich podziałów algorytm wyznacza optymalną ilość, która stanowi próg dla punktów odstających i na tej podstawie je klasyfikuje \cite{isolation-forest} \cite{isolation-forest-1}.
 \\\\
 Działanie algorytmu opisuje rysunek \ref{fig:isolation_forest}.
 
@@ -655,7 +655,7 @@ Działanie algorytmu przedstawia rysunek \ref{fig:reg_windowed}.
 \end{figure}
 
 \subsection{Algorytm fuzji}
-Algorytm polega na przebadaniu zbioru danych wszystkimi algorytmami a następnie oznaczanie ilości wystąpień sklasyfikowanych punktów odstających.Punkty finalnie uznaje się za odstające gdy wystąpiły one w X\% użytych algorytmów - domyślnie 50\% (punkt musi wystąpić jako odstający w co najmniej połowie użytych algorytmów).
+Algorytm polega na przebadaniu zbioru danych kilkoma wybranymi algorytmami a następnie oznaczanie ilości wystąpień sklasyfikowanych punktów odstających. Punkty finalnie uznaje się za odstające gdy wystąpiły one w X\% użytych algorytmów - domyślnie 50\% (punkt musi wystąpić jako odstający w co najmniej połowie użytych algorytmów).
 \\\\
 Implementacja może wyglądać następująco:
 \\
@@ -838,7 +838,7 @@ Po zakończeniu wszystkich zdefiniowanych testów zostanie uruchomiona procedura
 \end{itemize}
 Pojedynczy raport jest zapisany jako tabela w formacie CSV.
 \section{Zdefiniowanie testów oraz typów raportów}
-W procesie realizacji testów zostały wykorzystane zaimplementowane algorytmy wraz ze swoimi parametrami sterującymi. Wartości domyślne parametrów sterujących, wynikające ze wcześniejszych obliczeń i obserwacji:
+W procesie realizacji testów zostały wykorzystane zaimplementowane algorytmy wraz ze swoimi parametrami sterującymi. Wartości domyślne parametrów sterujących, wynikające ze wcześniejszych obliczeń i obserwacji prezentują się następująco:
 \\\\
 \begingroup
 \fontsize{10pt}{12pt}\selectfont
@@ -862,7 +862,7 @@ Tolerancja & Regresja liniowa z oknem czasowym & tolerance & 0.5 & 0.25, 0.3, 0.
 \endgroup
 
 \subsubsection{Typy raportów końcowych}
-Na podstawie przeprowadzonych testów oraz uzyskanych testów zostały stworzone raporty porównawcze w postaci tabel i wykresów. Typy tych raportów można podzielić na następujące:
+Na podstawie przeprowadzonych testów oraz uzyskanych wyników zostały stworzone raporty porównawcze w postaci tabel i wykresów. Typy tych raportów można podzielić na następujące:
 \begin{itemize}
   \item porównanie średnich wartości uzyskanych dla kolejnych parametrów dla wszystkich zbiorów danych
   \item porównanie jednego algorytmu / metody na podstawie różnych zbiorów danych
@@ -899,9 +899,9 @@ Parametr ten definiuje ile algorytmów musi być ze sobą zgodnych (sklasyfikowa
   \caption{Wyniki dla zmiany parametru clusters}
   \label{fig:avg_clusters}
 \end{figure}
-Zgodnie z oczekiwaniami najbardziej wrażliwym algorytmem na zmianę ilości klastrów jest algorytm, który wykorzystuje ilość punktów należących do tego samego klastra. Oczywistym jest zatem, że przy zwiększaniu ilości klastrów zmniejsza się średnia ilość punktów / klaster co prowadzi do zwiększonej ilości punktów, które zostały sklasyfikowane jako odstające przez ten algorytm.
+Zgodnie z oczekiwaniami najbardziej wrażliwym algorytmem na zmianę ilości klastrów jest algorytm, który wykorzystuje ilość punktów należących do tego samego klastra. Oczywistym jest zatem, że przy zwiększaniu ilości klastrów zmniejsza się średnia ilość punktów na klaster co prowadzi do zwiększonej ilości punktów, które zostały sklasyfikowane jako odstające przez ten algorytm.
 \\\\
-Dla pozostałych dwóch algorytmów liczba ta nie ma większego znaczenia, ze względu na obliczane odległości w klastrze. Nie mniej jednak przy zwiększaniu ilości klastrów > 50 zauważalny jest drastyczny spadek ilości wykrytych anomalii co wynika ze zbyt małej ilości punktów w klastrze, żeby była zauważalna wyraźna różnica między wartością średnią a wartością pojedynczych punktów w klastrze.
+Dla pozostałych dwóch algorytmów liczba ta nie ma większego znaczenia, ze względu na obliczane odległości w klastrze. Nie mniej jednak przy zwiększaniu ilości klastrów > 50 zauważalny jest drastyczny spadek ilości wykrytych anomalii co wynika ze zbyt małej ilości punktów w klastrze, żeby była zauważalna, wyraźna różnica między wartością średnią a wartością pojedynczych punktów w klastrze.
 \subsubsection{Parametr distance\_ratio}
 \begin{figure}[H]
   \begin{center}
@@ -910,7 +910,7 @@ Dla pozostałych dwóch algorytmów liczba ta nie ma większego znaczenia, ze wz
   \caption{Wyniki dla zmiany parametru distance\_ratio}
   \label{fig:avg_distance_ratio}
 \end{figure}
-Wraz ze wzrostem tego parametru można zauważyć stopniowe zmniejszanie się ilości punktów sklasyfikowanych jako odstające. Wynika to z tego, że parametr opisuje to jak odległe punkty muszą być od centroidu, żeby zostały sklasyfikowane odstające. Logiczne jest zatem, że im ten parametr jest większy, tym tych punktów jest w klastrze mniej.
+Wraz ze wzrostem tego parametru można zauważyć stopniowe zmniejszanie się ilości punktów sklasyfikowanych jako odstające. Wynika to z tego, że parametr opisuje to jak odległe punkty muszą być od centroidu, żeby zostały sklasyfikowane jako odstające. Logiczne jest zatem, że im ten parametr jest większy, tym tych punktów jest w klastrze mniej.
 \subsubsection{Parametr similarity}
 \begin{figure}[H]
   \begin{center}
@@ -931,7 +931,7 @@ Parametr ten opisuje jak wiele punktów musi klaster posiadać aby był on sklas
 Podobnie jak dla parametru distance\_ratio parametr tolerance opisuje jak dalekie punkty brane są pod uwagę przy klasyfikacji w zbiorze danych. Optymalną wartością są okolice 0.5.
 \subsection{Porównanie algorytmów}
 W celu przeprowadzenia testów zostały wybrane różne zbiory danych (wybór subiektywny). Na potrzeby lepszej analizy zbiory danych zostały pogrupowane na trzy rodzaje, w zależności od rodzaju charakterystyki oraz możliwości występowania punktów odstających (również podział subiektywny):
-\\
+\\\\
 Podział ze względu na możliwość występowania punktów odstających:
 \begin{itemize}
   \item A1 - widoczne są wyraźne anomalie
@@ -989,7 +989,7 @@ Dokładne charakterystyki powyższych zbiorów danych przedstawia dodatek A. Tes
   \caption{Wyniki dla algorytmu KMean - odległość od centroidu (wariant stały)}
   \label{fig:r_dist_f}
 \end{figure}
-Algorytm w tym wariancie w każdym zbiorze danych znalazł punkty odstające. Co więcej ich liczba oscyluje w granicach 5, co jest rezultatem sztywnego ustalenia co najmniej 5 punktów w pojedynczym rezultacie. Nawet pomimo użycia algorytmu uruchamiania metod w pętli, ze względu na mniejszą niż spodziewana losowość algorytmu KMean tylko w dwóch zbiorach danych została zauważona różnica.
+Algorytm w tym wariancie w każdym zbiorze danych znalazł punkty odstające. Co więcej, ich liczba oscyluje w granicach 5, co jest rezultatem sztywnego ustalenia co najmniej 5 punktów w pojedynczym rezultacie. Nawet pomimo użycia algorytmu uruchamiania metod w pętli, ze względu na mniejszą niż spodziewana losowość algorytmu KMean tylko w dwóch zbiorach danych została zauważona różnica.
 \\\\
 Metoda odległości od centroidu daje najlepsze, najbardziej trafne rezultaty, nawet pomimo stałej wartości zwracanych punktów (zawsze są to punkty, które przynajmniej warto rozważyć, gdyż rezultat nie jest oczywisty). Nie zostały zaobserwowane sklasyfikowania zupełnie błędne, które należałoby od razu odrzucić.
 \\
@@ -1021,7 +1021,7 @@ Algorytm wykorzystuje informację o ilości punktów w danym klastrze. Jedynymi 
   \caption{Wyniki dla algorytmu Isolation Forest}
   \label{fig:r_if}
 \end{figure}
-Z racji tego, że implementacja algorytmu wymaga podania procentowej zawartości punktów odstających oraz tego, że zbiory danych zostały wybrane (przefiltrowane) tak, aby zawierały > 700 punktów algorytm zawsze zwraca ilość punktów zbliżoną do 1\% ilości wszystkich punktów w zbiorze danych.
+Z racji tego, że implementacja algorytmu wymaga podania procentowej zawartości punktów odstających oraz tego, że zbiory danych zostały wybrane (przefiltrowane) tak, aby zawierały > 800 punktów algorytm zawsze zwraca ilość punktów zbliżoną do 1\% ilości wszystkich punktów w zbiorze danych.
 \\\\
 Wyniki uzyskiwane dla tego algorytmu były zbyt rozbieżne z wynikami innych algorytmów (sklasyfikowane punkty nie były uznane jako odstające przez pozostałe algorytmy w prawie każdym przypadku). Nie oznacza to, że algorytm zupełnie źle działa, gdyż również w większości przypadków klasyfikował punkty zgodnie z oczekiwaniami. Niestety równie często klasyfikował punkty mniej oczywiste z pominięciem tych oczekiwanych.
  
@@ -1051,9 +1051,9 @@ Algorytm może się nie sprawdzać w momentach gdy zbiór danych ma utrzymując�
 Najbardziej trafne wyniki uzyskiwano dla algorytmu KMean wraz z liczeniem odległości od centroidu w klastrze (oba warianty). Dawały one przynajmniej zadowalające wyniki w prawie każdym testowanym zbiorze danych (wraz ze zbiorami nie uwzględnionymi w badaniach). Algorytm ten wraz z metodami jest najbardziej obiecującym z pośród wszystkich zaimplementowanych i ma największe szanse na późniejszy rozwój. Zaskakujące wyniki dawał algorytm regresji liniowej, który w sporej ilości przeprowadzonych testów i badań znajdował zastosowanie pomimo swojej prostoty działania, był jednak zdecydowanie bardziej ograniczony od pozostałych. Najgorsze wyniki uzyskiwał algorytm KMean wraz z metodą ilości punktów w klastrze. W posiadanych zbiorach danych rzadko bowiem zdarzały się te, w których charakterystyka była na tyle specyficzna. Algorytm w dużej ilości testów określał punkty, których klasyfikacja jako odstających nie była zupełnie oczekiwana. Być może algorytm znalazłby zastosowanie w zbiorach danych o lekko innym pochodzeniu. Kolejnym algorytmem, który dawał mieszane wyniki był algorytm Isolation Forest. Jego rezultaty były bardzo losowe, przez co jego użycie nie jest jednoznaczne. W około 20 - 30\% otrzymywano jednak wyniki w miarę poprawne, toteż być może został on zaimplementowany w zły sposób (jego próba polepszenia powinna być wzięta pod uwagę).
 
 \section{Wnioski}
-Przeprowadzone badania i otrzymane wyniki pokazały, jak trudnym i skomplikowanym zagadnieniem jest wykrywanie obserwacji odstających. Pomimo zaimplementowania trzech algorytmów w różnych wariantach żaden z nich nie dawał stuprocentowej pewności co do zwracanych wyników. Duży wpływ na sposób implementacji oraz w rezultacie wyniki miał również fakt, że zbiory danych nie posiadały zbiorów testowych a punkty były nieetykietowane.nie posiadały etykiet wskazujących na ich przynależność. Dodatkowo na każdy zbiór danych składały się punkty jedynie o dwóch cechach, które okazały się cechami słabymi. Wszystko to złożyło się na niekonwencjonalne podejście do metodyki i implementacji wyszukiwania obserwacji odstających. By otrzymać rezultaty co najmniej satysfakcjonujące należało podejść do problemu nie tylko jako problemu uczenia maszynowego ale również jako problemu matematycznego, gdzie duże znaczenie miały wyliczone miary statystyczne.
+Przeprowadzone badania i otrzymane wyniki pokazały, jak trudnym i skomplikowanym zagadnieniem jest wykrywanie obserwacji odstających. Pomimo zaimplementowania trzech algorytmów w różnych wariantach żaden z nich nie dawał stuprocentowej pewności co do zwracanych wyników. Duży wpływ na sposób implementacji oraz w rezultacie wyniki miał również fakt, że zbiory danych nie posiadały zbiorów testowych a punkty były nieetykietowan (nie posiadały etykiet wskazujących na ich przynależność). Dodatkowo na każdy zbiór danych składały się punkty jedynie o dwóch cechach, które okazały się cechami słabymi. Wszystko to złożyło się na niekonwencjonalne podejście do metodyki i implementacji wyszukiwania obserwacji odstających. By otrzymać rezultaty co najmniej satysfakcjonujące należało podejść do problemu nie tylko jako problemu uczenia maszynowego ale również jako problemu matematycznego, gdzie duże znaczenie miały wyliczone miary statystyczne.
 \\\\
-W końcowym efekcie nie udało się stworzyć unikalnego systemu wyszukiwania obserwacji odstających a jedynie pojedyncze algorytmy, które miały zastosowanie przy zachowaniu ściśle określonych warunków takich jak typu zbioru danych, rodzaj opisywanych metryk czy charakterystyki oraz trendu. Być może również otrzymane dane, które posłużyły za materiał testowy do wytworzenia systemu swoim pochodzeniem nie nadają się do rozwiązania tak sformowanego problemu z tak przyjętymi kryteriami i parametrami. Praca w końcowych etapach wykorzystywała bardzo dużo subiektywnych opinii (wybór zbiorów danych, algorytmów czy stawianie oczekiwań co do wyników). W systemie brakowało sporej ilości dodatkowych informacji o zbiorach danych (np. prawdopodobieństwo wystąpienia anomalii w danym okresie czasu ze względu na czynniki zewnętrzne mające miejsce w tym czasie) co sprawiło, że system w dużej mierze działa "na ślepo", co występuje również w subiektywnym (ludzkim) podejściu do wskazywania prawdopodobnych punktów odstających.
+W końcowym efekcie nie udało się stworzyć unikalnego systemu wyszukiwania obserwacji odstających a jedynie pojedyncze algorytmy, które miały zastosowanie przy zachowaniu ściśle określonych warunków takich jak typu zbioru danych, rodzaj opisywanych metryk czy charakterystyki oraz trendu. Być może również otrzymane dane, które posłużyły za materiał testowy do wytworzenia systemu swoim pochodzeniem nie nadają się do rozwiązania tak sformułowanego problemu z tak przyjętymi kryteriami i parametrami. Praca w końcowych etapach wykorzystywała bardzo dużo subiektywnych opinii (wybór zbiorów danych, algorytmów czy stawianie oczekiwań co do wyników). W systemie brakowało sporej ilości dodatkowych informacji o zbiorach danych (np. prawdopodobieństwo wystąpienia anomalii w danym okresie czasu ze względu na czynniki zewnętrzne) co sprawiło, że system w dużej mierze działa "na ślepo", co jest bardzo zbliżone do subiektywnego (ludzkiego) podejścia do wskazywania prawdopodobnych punktów odstających.
 \\\\
 System w obecnej postaci może stanowić pomoc przy rozbudowaniu podobnych systemów wyszukiwania anomalii. Daje on wyniki średnie, jednak w sporej mierze (subiektywnie) trafne. System może być podstawą do przynajmniej rozpoczęcia głębszych analiz w procesie wyszukiwania obserwacji odstających.
 \subsection{Problemy i trudności}
